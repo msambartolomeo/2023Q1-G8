@@ -34,3 +34,8 @@ module "cloudfront" {
   bucket_id = module.s3.bucket_id
   bucket_name = module.s3.bucket_id
 }
+
+module "apigateway"{
+  source = "./modules/apigw"
+  lambda_arn = module.lambda.invoke_arn[0]
+}
