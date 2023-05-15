@@ -12,8 +12,3 @@ variable "bucket_name" {
   type        = string
   description = "The name of the bucket without the www. prefix. Normally domain_name."
 }
-
-variable "account_id"{
-    type = string
-    description = "The account ID from the learner lab found in the AWS details tab"
-}
