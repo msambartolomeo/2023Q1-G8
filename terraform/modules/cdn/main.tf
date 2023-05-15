@@ -22,12 +22,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = var.bucket_id
-    cache_policy_id = data.aws_cloudfront_cache_policy.optimized.id
+    cache_policy_id  = data.aws_cloudfront_cache_policy.optimized.id
 
-    min_ttl = 0
-    default_ttl = 0
-    max_ttl = 0
-    compress = true
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
+    compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
 

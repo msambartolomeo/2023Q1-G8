@@ -2,15 +2,15 @@ output "bucket_regional_domain_name" {
   value = aws_s3_bucket.cloud_website.bucket_regional_domain_name
 }
 
-output "bucket_domain_name"{
+output "bucket_domain_name" {
   value = aws_s3_bucket.cloud_website.bucket_domain_name
 }
 
-output "website_endpoint"{
+output "website_endpoint" {
   value = aws_s3_bucket_website_configuration.website_config.website_endpoint
 }
 
-output "bucket_arn"{
+output "bucket_arn" {
   value = aws_s3_bucket.cloud_website.arn
 }
 
