@@ -17,7 +17,7 @@ resource "aws_lambda_function" "self" {
   function_name = each.value.name
   role          = data.aws_iam_role.lambda.arn
   handler       = each.value.handler
-  runtime       = var.runtime
+  runtime       = each.value.runtime
 
   vpc_config {
     subnet_ids         = var.subnet_ids
