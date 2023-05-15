@@ -5,9 +5,10 @@ module "vpc" {
 module "lambda" {
   source = "./modules/lambda"
 
-  lambdas    = local.lambdas
-  vpc_id     = module.vpc.vpc.id
-  subnet_ids = [for s in module.vpc.vpc.subnets : s.id]
+  lambdas             = local.lambdas
+  vpc_id              = module.vpc.vpc.id
+  subnet_ids          = [for s in module.vpc.vpc.subnets : s.id]
+  apigw_execution_arn = module.apigateway.execution_arn
 }
 
 module "s3" {
@@ -25,7 +26,7 @@ module "cloudfront" {
   bucket_name                 = module.s3.bucket_id
 }
 
-module "apigateway"{
-  source = "./modules/apigw"
+module "apigateway" {
+  source     = "./modules/apigw"
   lambda_arn = module.lambda.invoke_arn[0]
 }
