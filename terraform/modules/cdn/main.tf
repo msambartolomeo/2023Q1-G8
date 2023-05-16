@@ -12,6 +12,19 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
+  origin {
+    domain_name = replace(var.apigw_invoke_url, "/^https?://([^/]*).*/", "$1")
+    origin_id   = var.apigw_origin_id
+    origin_path = "/prod"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "CloudFront CDN distribution"
@@ -29,6 +42,20 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     max_ttl                = 0
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
+  }
+
+  ordered_cache_behavior {
+    path_pattern     = "/api/*"
+    target_origin_id = var.apigw_origin_id
+    allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    cached_methods   = ["GET", "HEAD"]
+    cache_policy_id  = data.aws_cloudfront_cache_policy.optimized.id
+
+    viewer_protocol_policy = "allow-all"
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
+    compress               = true
   }
 
   restrictions {

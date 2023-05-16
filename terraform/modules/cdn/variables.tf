@@ -13,3 +13,14 @@ variable "bucket_name" {
   type        = string
   description = "the bucket's name"
 }
+
+variable "apigw_invoke_url" {
+  description = "you need this to connect the cdn to the api gateway"
+  type        = string
+}
+
+variable "apigw_origin_id" {
+  type        = string
+  description = "origin_id for the api gateway connection"
+  default     = "apiOrigin"
+}

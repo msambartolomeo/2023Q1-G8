@@ -13,10 +13,7 @@ module "lambda" {
 
 module "s3" {
   source = "./modules/s3"
-
-  bucket_name = var.bucket_name
-  domain_name = var.domain_name
-  CDN_OAI     = [module.cloudfront.OAI]
+  CDN_OAI = [module.cloudfront.OAI]
 }
 
 module "cloudfront" {
@@ -24,6 +21,7 @@ module "cloudfront" {
   bucket_regional_domain_name = module.s3.bucket_regional_domain_name
   bucket_id                   = module.s3.bucket_id
   bucket_name                 = module.s3.bucket_id
+  apigw_invoke_url = module.apigateway.invoke_url
 }
 
 module "apigateway" {

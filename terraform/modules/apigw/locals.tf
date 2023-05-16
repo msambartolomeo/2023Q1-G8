@@ -8,7 +8,7 @@ locals {
       version = "1.0"
     }
     paths = {
-      "/medical-records" = {
+      "/api/medical-records" = {
         get = {
           x-amazon-apigateway-integration = {
             httpMethod           = "POST"
