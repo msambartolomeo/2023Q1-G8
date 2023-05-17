@@ -2,20 +2,20 @@ data "aws_cloudfront_cache_policy" "optimized" {
   name = "Managed-CachingOptimized"
 }
 
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "self" {
   origin {
     domain_name = var.bucket_regional_domain_name
-    origin_id   = var.bucket_id
+    origin_id   = var.bucket_name
 
     s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.CDN_OAI.cloudfront_access_identity_path
+      origin_access_identity = aws_cloudfront_origin_access_identity.self.cloudfront_access_identity_path
     }
   }
 
   origin {
     domain_name = replace(var.apigw_invoke_url, "/^https?://([^/]*).*/", "$1")
-    origin_id   = var.apigw_origin_id
-    origin_path = "/prod"
+    origin_id   = local.apigw_id
+    origin_path = var.apigw_stage
 
     custom_origin_config {
       http_port              = 80
@@ -34,7 +34,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = var.bucket_id
+    target_origin_id = var.bucket_name
     cache_policy_id  = data.aws_cloudfront_cache_policy.optimized.id
 
     min_ttl                = 0
@@ -45,8 +45,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   ordered_cache_behavior {
-    path_pattern     = "/api/*"
-    target_origin_id = var.apigw_origin_id
+    path_pattern     = "/${var.apigw_base_path}/*"
+    target_origin_id = local.apigw_id
     allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
     cached_methods   = ["GET", "HEAD"]
     cache_policy_id  = data.aws_cloudfront_cache_policy.optimized.id
@@ -69,6 +69,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 }
 
-resource "aws_cloudfront_origin_access_identity" "CDN_OAI" {
+resource "aws_cloudfront_origin_access_identity" "self" {
   comment = "OAI for ${var.bucket_name}"
 }

@@ -1,11 +1,15 @@
 resource "aws_api_gateway_rest_api" "self" {
-  name        = local.name
-  description = local.description
+  name = var.name
 
-  body = local.template_file
+  body = var.template_file
+
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
 
   tags = {
-    name = local.name
+    name        = var.name
+    environment = var.stage_name
   }
 }
 
@@ -13,7 +17,7 @@ resource "aws_api_gateway_deployment" "self" {
   rest_api_id = aws_api_gateway_rest_api.self.id
 
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.self.body))
+    redeployment = sha1(var.template_file)
   }
 
   lifecycle {
@@ -24,5 +28,5 @@ resource "aws_api_gateway_deployment" "self" {
 resource "aws_api_gateway_stage" "self" {
   deployment_id = aws_api_gateway_deployment.self.id
   rest_api_id   = aws_api_gateway_rest_api.self.id
-  stage_name    = "prod"
+  stage_name    = var.stage_name
 }

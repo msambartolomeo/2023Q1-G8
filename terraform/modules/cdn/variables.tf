@@ -1,26 +1,25 @@
 
 variable "bucket_regional_domain_name" {
-  description = "target domain name of the S3 bucket"
   type        = string
-}
-
-variable "bucket_id" {
-  description = "target domain name of the S3 bucket"
-  type        = string
+  description = "Domain name of the frontend S3 bucket"
 }
 
 variable "bucket_name" {
   type        = string
-  description = "the bucket's name"
+  description = "Name of the frontend S3 bucket"
 }
 
 variable "apigw_invoke_url" {
-  description = "you need this to connect the cdn to the api gateway"
   type        = string
+  description = "Url for Cloudfront to call the API-GW"
 }
 
-variable "apigw_origin_id" {
+variable "apigw_base_path" {
   type        = string
-  description = "origin_id for the api gateway connection"
-  default     = "apiOrigin"
+  description = "Base path of the API-GW"
+}
+
+variable "apigw_stage" {
+  type        = string
+  description = "Stage prefix of the API-GW"
 }
