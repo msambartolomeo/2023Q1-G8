@@ -1,4 +1,8 @@
 locals {
+  vpc = {
+    name = "main-vpc"
+  }
+
   # Lambda
   lambdas = {
     lambda = {
