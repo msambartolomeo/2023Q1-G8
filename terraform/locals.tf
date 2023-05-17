@@ -39,4 +39,18 @@ locals {
     } })
 
   }
+
+  # Dynamodb
+  dynamodb = {
+    tables = {
+      patients = {
+        name = "patients-table"
+      }
+      doctors = {
+        name = "doctors-table"
+      }
+    }
+    read_capacity  = 5
+    write_capacity = 5
+  }
 }

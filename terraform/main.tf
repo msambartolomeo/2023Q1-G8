@@ -36,3 +36,27 @@ module "cloudfront" {
   apigw_base_path             = local.apigateway.base_path
   apigw_stage                 = "/${local.apigateway.stage_name}"
 }
+
+module "dynamodb" {
+  for_each = local.dynamodb.tables
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name      = each.value.name
+  hash_key  = "pk"
+  range_key = "sk"
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = local.dynamodb.read_capacity
+  write_capacity = local.dynamodb.write_capacity
+
+  attributes = [
+    {
+      name = "pk"
+      type = "S"
+    },
+    {
+      name = "sk"
+      type = "S"
+    }
+  ]
+}
