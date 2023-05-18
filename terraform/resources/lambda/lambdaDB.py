@@ -1,20 +1,30 @@
 import json
+import logging
+
 import boto3
 
-client = boto3.client('dynamodb')
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+client = boto3.client("dynamodb")
+
 
 def handler(event, context):
-  data = client.scan(
-    TableName='patients-table'
-  )
+    logger.info("Executing Lambda function...")
 
-  response = {
-      'statusCode': 200,
-      'body': json.dumps(data),
-      'headers': {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-  }
-  
-  return response
+    data = client.scan(TableName="patients-table")
+
+    logger.info("Querying DynamoDB table...")
+
+    response = {
+        "statusCode": 200,
+        "body": json.dumps(data),
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+        },
+    }
+
+    logger.info("Returning response...")
+
+    return response

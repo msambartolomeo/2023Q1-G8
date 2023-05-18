@@ -33,9 +33,6 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-*.zip
-!/**/lambda.zip
-
 # Terraform files
 .terraform/
 .terraform.*
