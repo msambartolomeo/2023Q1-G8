@@ -1,4 +1,4 @@
-resource "aws_api_gateway_rest_api" "self" {
+resource "aws_api_gateway_rest_api" "this" {
   name = var.name
 
   body = var.template_file
@@ -13,8 +13,8 @@ resource "aws_api_gateway_rest_api" "self" {
   }
 }
 
-resource "aws_api_gateway_deployment" "self" {
-  rest_api_id = aws_api_gateway_rest_api.self.id
+resource "aws_api_gateway_deployment" "this" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
 
   triggers = {
     redeployment = sha1(var.template_file)
@@ -25,8 +25,8 @@ resource "aws_api_gateway_deployment" "self" {
   }
 }
 
-resource "aws_api_gateway_stage" "self" {
-  deployment_id = aws_api_gateway_deployment.self.id
-  rest_api_id   = aws_api_gateway_rest_api.self.id
+resource "aws_api_gateway_stage" "this" {
+  deployment_id = aws_api_gateway_deployment.this.id
+  rest_api_id   = aws_api_gateway_rest_api.this.id
   stage_name    = var.stage_name
 }

@@ -25,7 +25,7 @@ data "aws_iam_role" "lambda" {
   name = "LabRole"
 }
 
-resource "aws_lambda_function" "self" {
+resource "aws_lambda_function" "this" {
   for_each = var.lambdas
 
   filename         = each.value.path
@@ -47,8 +47,8 @@ resource "aws_lambda_function" "self" {
   depends_on = [aws_security_group.lambda]
 }
 
-resource "aws_lambda_permission" "self" {
-  for_each      = aws_lambda_function.self
+resource "aws_lambda_permission" "this" {
+  for_each      = aws_lambda_function.this
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = each.value.function_name

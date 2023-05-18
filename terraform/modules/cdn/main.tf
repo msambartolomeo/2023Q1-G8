@@ -2,13 +2,13 @@ data "aws_cloudfront_cache_policy" "optimized" {
   name = "Managed-CachingOptimized"
 }
 
-resource "aws_cloudfront_distribution" "self" {
+resource "aws_cloudfront_distribution" "this" {
   origin {
     domain_name = var.bucket_regional_domain_name
     origin_id   = var.bucket_name
 
     s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.self.cloudfront_access_identity_path
+      origin_access_identity = aws_cloudfront_origin_access_identity.this.cloudfront_access_identity_path
     }
   }
 
@@ -69,6 +69,6 @@ resource "aws_cloudfront_distribution" "self" {
   }
 }
 
-resource "aws_cloudfront_origin_access_identity" "self" {
+resource "aws_cloudfront_origin_access_identity" "this" {
   comment = "OAI for ${var.bucket_name}"
 }
