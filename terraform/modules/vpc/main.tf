@@ -17,3 +17,12 @@ resource "aws_subnet" "self" {
     Name = "private-${count.index}"
   }
 }
+
+resource "aws_vpc_endpoint" "this" {
+  for_each = var.vpc_endpoints
+
+  vpc_id       = aws_vpc.self.id
+  service_name = each.value.service_name
+
+  route_table_ids = [aws_vpc.self.default_route_table_id]
+}

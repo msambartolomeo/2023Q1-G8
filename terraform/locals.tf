@@ -1,6 +1,16 @@
 locals {
   vpc = {
     name = "main-vpc"
+    endpoints = {
+      s3 = {
+        service_name  = "com.amazonaws.${var.aws_region}.s3"
+        endpoint_name = "s3-vpc-endpoint"
+      }
+      dynamodb = {
+        service_name  = "com.amazonaws.${var.aws_region}.dynamodb"
+        endpoint_name = "dynamodb-vpc-endpoint"
+      }
+    }
   }
 
   # Lambda

@@ -1,7 +1,8 @@
 module "vpc" {
   source = "./modules/vpc"
 
-  name = local.vpc.name
+  name          = local.vpc.name
+  vpc_endpoints = local.vpc.endpoints
 }
 
 module "lambda" {
