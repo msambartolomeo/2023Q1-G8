@@ -21,6 +21,13 @@ locals {
       hash    = filebase64sha256("./resources/lambda/lambda.zip")
       handler = "lambda.handler"
       runtime = "python3.9"
+    },
+    lambdaDB = {
+      name    = "lambdaDB"
+      path    = "./resources/lambda/lambdaDB.zip"
+      hash    = filebase64sha256("./resources/lambda/lambdaDB.zip")
+      handler = "lambdaDB.handler"
+      runtime = "python3.9"
     }
   }
 
@@ -43,6 +50,16 @@ locals {
               payloadFormatVersion = "1.0"
               type                 = "aws_proxy"
               uri                  = module.lambda.lambdas["lambda"].invoke_arn
+            }
+          }
+        },
+        "/api/scan-db" = {
+          get = {
+            x-amazon-apigateway-integration = {
+              httpMethod           = "POST"
+              payloadFormatVersion = "1.0"
+              type                 = "aws_proxy"
+              uri                  = module.lambda.lambdas["lambdaDB"].invoke_arn
             }
           }
         }
