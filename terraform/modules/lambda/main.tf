@@ -36,6 +36,13 @@ resource "aws_lambda_function" "this" {
   runtime          = each.value.runtime
   source_code_hash = each.value.hash
 
+  dynamic "environment" {
+    for_each = length(keys(try(each.value.environment, {}))) > 0 ? [1] : []
+    content {
+      variables = each.value.environment
+    }
+  }
+
   vpc_config {
     subnet_ids         = var.subnet_ids
     security_group_ids = [aws_security_group.lambda.id]

@@ -1,5 +1,5 @@
 variable "lambdas" {
-  type = map(map(string))
+  type = any
 }
 
 variable "vpc_id" {

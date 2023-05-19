@@ -30,6 +30,16 @@ locals {
       handler = "lambdaDB.handler"
       runtime = "python3.9"
     }
+    lambdaS3 = {
+      name    = "lambdaS3"
+      path    = "./resources/lambda/lambdaS3.zip"
+      hash    = filebase64sha256("./resources/lambda/lambdaS3.zip")
+      handler = "lambdaS3.handler"
+      runtime = "python3.9"
+      environment = {
+        BUCKET_NAME = module.s3["records"].bucket_id
+      }
+    }
   }
 
   # api gateway
@@ -44,7 +54,7 @@ locals {
         version = "1.0"
       }
       paths = {
-        "/api/medical-records" = {
+        "/api/test" = {
           get = {
             x-amazon-apigateway-integration = {
               httpMethod           = "POST"
@@ -61,6 +71,16 @@ locals {
               payloadFormatVersion = "1.0"
               type                 = "aws_proxy"
               uri                  = module.lambda.lambdas["lambdaDB"].invoke_arn
+            }
+          }
+        }
+        "/api/record" = {
+          get = {
+            x-amazon-apigateway-integration = {
+              httpMethod           = "POST"
+              payloadFormatVersion = "1.0"
+              type                 = "aws_proxy"
+              uri                  = module.lambda.lambdas["lambdaS3"].invoke_arn
             }
           }
         }
@@ -106,11 +126,11 @@ locals {
       encription_algorithm = "AES256"
       # NOTE: Example record for testing
       objects = [
-        {
-          key          = "record.pdf"
-          source       = "./resources/medical-records/record.pdf"
-          etag         = filemd5("./resources/medical-records/record.pdf")
-          content_type = ""
+        for file in fileset("./resources/medical-records/", "**/*.pdf") : {
+          key          = file
+          source       = "./resources/medical-records/${file}"
+          etag         = filemd5("./resources/medical-records/${file}")
+          content_type = "application/pdf"
         }
       ]
     }
