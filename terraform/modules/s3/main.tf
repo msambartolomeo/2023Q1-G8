@@ -7,18 +7,22 @@ resource "aws_s3_bucket" "this" {
 }
 
 resource "aws_s3_bucket_website_configuration" "this" {
+  count = length(keys(var.website_configuration)) > 0 ? 1 : 0
+
   bucket = aws_s3_bucket.this.id
 
   index_document {
-    suffix = "index.html"
+    suffix = var.website_configuration.index_document
   }
 
   error_document {
-    key = "error.html"
+    key = var.website_configuration.error_document
   }
 }
 
 resource "aws_s3_bucket" "log_bucket" {
+  count = length(keys(var.website_configuration)) > 0 ? 1 : 0
+
   bucket_prefix = "${var.bucket_name}-log"
 
   tags = {
@@ -27,22 +31,28 @@ resource "aws_s3_bucket" "log_bucket" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "log_bucket_oc" {
-  bucket = aws_s3_bucket.log_bucket.id
+  count = length(keys(var.website_configuration)) > 0 ? 1 : 0
+
+  bucket = aws_s3_bucket.log_bucket[0].id
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
 }
 
 resource "aws_s3_bucket_acl" "log_bucket_acl" {
+  count = length(keys(var.website_configuration)) > 0 ? 1 : 0
+
   depends_on = [aws_s3_bucket_ownership_controls.log_bucket_oc]
-  bucket = aws_s3_bucket.log_bucket.id
-  acl    = "log-delivery-write"
+  bucket     = aws_s3_bucket.log_bucket[0].id
+  acl        = "log-delivery-write"
 }
 
 resource "aws_s3_bucket_logging" "this" {
+  count = length(keys(var.website_configuration)) > 0 ? 1 : 0
+
   bucket = aws_s3_bucket.this.id
 
-  target_bucket = aws_s3_bucket.log_bucket.id
+  target_bucket = aws_s3_bucket.log_bucket[0].id
   target_prefix = "log/"
 }
 
@@ -82,17 +92,17 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      sse_algorithm = var.encription_algorithm
     }
   }
 }
 
-data "aws_iam_policy_document" "allow_access_from_cloudfront" {
+data "aws_iam_policy_document" "allow_read_access" {
   statement {
 
     principals {
       type        = "AWS"
-      identifiers = [var.CDN_OAI]
+      identifiers = var.access_ids
     }
 
     actions = [
@@ -105,9 +115,11 @@ data "aws_iam_policy_document" "allow_access_from_cloudfront" {
   }
 }
 
-resource "aws_s3_bucket_policy" "cloudfront_policy" {
+resource "aws_s3_bucket_policy" "read_access_policy" {
+  count = length(keys(var.website_configuration)) > 0 ? 1 : 0
+
   bucket = aws_s3_bucket.this.id
-  policy = data.aws_iam_policy_document.allow_access_from_cloudfront.json
+  policy = data.aws_iam_policy_document.allow_read_access.json
 }
 
 resource "aws_s3_object" "this" {

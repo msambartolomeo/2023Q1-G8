@@ -86,13 +86,31 @@ locals {
 
   s3 = {
     website = {
-      bucket_name = "cloud-website"
+      bucket_name          = "cloud-website"
+      encription_algorithm = "AES256"
       objects = [
         for file in fileset("./resources/html/", "**/*.html") : {
           key          = file
           source       = "./resources/html/${file}"
           etag         = filemd5("./resources/html/${file}")
           content_type = "text/html"
+        }
+      ]
+      website_configuration = {
+        index_document = "index.html"
+        error_document = "error.html"
+      }
+    }
+    records = {
+      bucket_name          = "medical-records"
+      encription_algorithm = "AES256"
+      # NOTE: Example record for testing
+      objects = [
+        {
+          key          = "record.pdf"
+          source       = "./resources/medical-records/record.pdf"
+          etag         = filemd5("./resources/medical-records/record.pdf")
+          content_type = ""
         }
       ]
     }

@@ -7,7 +7,8 @@ output "bucket_domain_name" {
 }
 
 output "website_endpoint" {
-  value = aws_s3_bucket_website_configuration.this.website_endpoint
+  description = "The website endpoint, if the bucket is a website"
+  value       = length(aws_s3_bucket_website_configuration.this) > 0 ? aws_s3_bucket_website_configuration.this[0].website_endpoint : ""
 }
 
 output "bucket_arn" {

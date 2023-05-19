@@ -16,11 +16,14 @@ module "lambda" {
 }
 
 module "s3" {
-  source = "./modules/s3"
+  for_each = local.s3
+  source   = "./modules/s3"
 
-  bucket_name = local.s3.website.bucket_name
-  objects     = local.s3.website.objects
-  CDN_OAI     = module.cloudfront.OAI
+  access_ids            = [module.cloudfront.OAI]
+  bucket_name           = each.value.bucket_name
+  objects               = each.value.objects
+  website_configuration = try(each.value.website_configuration, {})
+  encription_algorithm  = each.value.encription_algorithm
 }
 
 module "apigateway" {
@@ -34,8 +37,8 @@ module "apigateway" {
 module "cloudfront" {
   source = "./modules/cdn"
 
-  bucket_regional_domain_name = module.s3.bucket_regional_domain_name
-  bucket_name                 = module.s3.bucket_id
+  bucket_regional_domain_name = module.s3["website"].bucket_regional_domain_name
+  bucket_name                 = module.s3["website"].bucket_id
   apigw_invoke_url            = module.apigateway.invoke_url
   apigw_base_path             = local.apigateway.base_path
   apigw_stage                 = "/${local.apigateway.stage_name}"
