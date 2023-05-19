@@ -14,39 +14,27 @@
 
 * APIGW 
 
-Se realizo la implementación de la API lo que hara que se pueda acceder en un entorno especifico.
-*  CDN 
+Construye una API REST que puede recibir solicitudes de ingreso  
+
+*CDN
 
 * LAMBDA 
 
+Definimos 2 lambdas. Una se encarga de realizar escrituras al ingreso y la otra de realizar lecturas salida del usuario. 
+
 * S3 
+
+Definimos 3 cubos. Uno para logs y dos para el frontend que te dirige al sitio 
 
 * VPC 
 
+Este módulo es externo. Se define en este toda la parte de networking que se detalla en el diagrama de la arquitectura (el cual se encuentra al final de este documento).
 
-# Componentes 
 
-1.api.gw
-
-2.Lambda
-
-3.Bucket
-
-4.Segurity group
-
-5.I am role 
-
-6. Cloud front 
-
-7. S3
-
-8.CDN 
 
 # Funciones 
 
-1.I AM
-2.Lambda
-3.Amazon Cloudfront
+
 
 
 
@@ -61,5 +49,6 @@ Se realizo la implementación de la API lo que hara que se pueda acceder en un e
 
 
 ![Foto de la aquitectura](https://github.com/Amparo1999/amparo1999/assets/116674796/74f5ac98-a21a-41a3-8a38-23148b4d5f83)
+
 
 
