@@ -14,9 +14,11 @@
 
 * APIGW 
 
-Construye una API REST que puede recibir solicitudes de ingreso  
+Construye una API REST que va recibir requests una de ingreso y otra de egreso.Depende del request a la lambdas que ira.
 
-*CDN
+* CloudFront 
+
+Funciona como CDN y realiza caché de la API y del S3 (que hostea el sitio estático)
 
 * LAMBDA 
 
