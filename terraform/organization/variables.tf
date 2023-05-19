@@ -24,3 +24,13 @@ variable "dynamodb_write_capacity" {
   type        = number
   description = "Write capacity for dynamoDB"
 }
+
+variable "website_bucket_name" {
+  type        = string
+  description = "Name of the bucket for the website"
+}
+
+variable "records_bucket_name" {
+  type        = string
+  description = "Name of the bucket for the medical records"
+}

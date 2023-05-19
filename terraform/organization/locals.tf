@@ -107,7 +107,7 @@ locals {
 
   s3 = {
     website = {
-      bucket_name          = "cloud-website"
+      bucket_name          = var.website_bucket_name
       encription_algorithm = "AES256"
       objects = [
         for file in fileset("../resources/html/", "**/*.html") : {
@@ -121,9 +121,16 @@ locals {
         index_document = "index.html"
         error_document = "error.html"
       }
+      acl_type = "private"
+    }
+    website_logs = {
+      bucket_name          = "${var.website_bucket_name}-logs"
+      encription_algorithm = "AES256"
+      log_of               = var.website_bucket_name
+      acl_type             = "log-delivery-write"
     }
     records = {
-      bucket_name          = "medical-records"
+      bucket_name          = var.records_bucket_name
       encription_algorithm = "AES256"
       # NOTE: Example record for testing
       objects = [
@@ -134,6 +141,7 @@ locals {
           content_type = "application/pdf"
         }
       ]
+      acl_type = "private"
     }
   }
 }

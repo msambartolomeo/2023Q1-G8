@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "this" {
-  bucket_prefix = var.bucket_name
+  bucket = var.bucket_name
 
   tags = {
     Name : var.bucket_name
@@ -17,7 +17,7 @@ resource "aws_s3_bucket_acl" "this" {
   depends_on = [aws_s3_bucket_ownership_controls.this]
 
   bucket = aws_s3_bucket.this.id
-  acl    = "private"
+  acl    = var.acl_type
 }
 
 resource "aws_s3_bucket_public_access_block" "this" {
@@ -57,6 +57,15 @@ resource "aws_s3_object" "this" {
   content_type = var.objects[count.index].content_type
 }
 
+resource "aws_s3_bucket_logging" "this" {
+  count = var.log_of == "" ? 0 : 1
+
+  bucket = var.log_of
+
+  target_bucket = aws_s3_bucket.this.id
+  target_prefix = "log/"
+}
+
 # NOTE: The following is only created if a website configuration is provided
 
 resource "aws_s3_bucket_website_configuration" "this" {
@@ -71,42 +80,6 @@ resource "aws_s3_bucket_website_configuration" "this" {
   error_document {
     key = var.website_configuration.error_document
   }
-}
-
-resource "aws_s3_bucket" "log_bucket" {
-  count = length(keys(var.website_configuration)) > 0 ? 1 : 0
-
-  bucket_prefix = "${var.bucket_name}-log"
-
-  tags = {
-    Name : "${var.bucket_name}-log"
-  }
-}
-
-resource "aws_s3_bucket_ownership_controls" "log_bucket" {
-  count = length(keys(var.website_configuration)) > 0 ? 1 : 0
-
-  bucket = aws_s3_bucket.log_bucket[0].id
-  rule {
-    object_ownership = "BucketOwnerPreferred"
-  }
-}
-
-resource "aws_s3_bucket_acl" "log_bucket" {
-  count = length(keys(var.website_configuration)) > 0 ? 1 : 0
-
-  depends_on = [aws_s3_bucket_ownership_controls.log_bucket]
-  bucket     = aws_s3_bucket.log_bucket[0].id
-  acl        = "log-delivery-write"
-}
-
-resource "aws_s3_bucket_logging" "this" {
-  count = length(keys(var.website_configuration)) > 0 ? 1 : 0
-
-  bucket = aws_s3_bucket.this.id
-
-  target_bucket = aws_s3_bucket.log_bucket[0].id
-  target_prefix = "log/"
 }
 
 data "aws_iam_policy_document" "allow_read_access" {

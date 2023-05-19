@@ -24,3 +24,14 @@ variable "access_ids" {
   type        = list(string)
   description = "Ids of elements that will have read access to the bucket"
 }
+
+variable "log_of" {
+  type        = string
+  description = "Id of the bucket this bucket will save logs of"
+  default     = ""
+}
+
+variable "acl_type" {
+  type        = string
+  description = "Type of the bucket acl"
+}
