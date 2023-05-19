@@ -5,6 +5,10 @@
 
 *Buscamos poder gestionar y almacenar los registros médicos a través de una interfaz rápida y sencilla, para poder a través de clicks encontrar y actualizar la información de los pacientes*. 
 
+## Deployment
+Para deployear el repositorio se necesita proveer un archivo terraform.tfvars con las variables necesarias.
+Se provee un archivo de ejemplo [terraform.example.tfvars](./terraform/organization/terraform.example.tfvars)
+
 ## Modulos utilizados
 
 * API Gateway: Recibe los request de CloudFront y los distribuye a las lambdas. Se definen los endpoints en formato json y se calcula su hash para redeployearlos cuando haya algun cambio
