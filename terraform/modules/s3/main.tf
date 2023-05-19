@@ -18,6 +18,34 @@ resource "aws_s3_bucket_website_configuration" "this" {
   }
 }
 
+resource "aws_s3_bucket" "log_bucket" {
+  bucket_prefix = "${var.bucket_name}-log"
+
+  tags = {
+    Name : "${var.bucket_name}-log"
+  }
+}
+
+resource "aws_s3_bucket_ownership_controls" "log_bucket_oc" {
+  bucket = aws_s3_bucket.log_bucket.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "log_bucket_acl" {
+  depends_on = [aws_s3_bucket_ownership_controls.log_bucket_oc]
+  bucket = aws_s3_bucket.log_bucket.id
+  acl    = "log-delivery-write"
+}
+
+resource "aws_s3_bucket_logging" "this" {
+  bucket = aws_s3_bucket.this.id
+
+  target_bucket = aws_s3_bucket.log_bucket.id
+  target_prefix = "log/"
+}
+
 resource "aws_s3_bucket_ownership_controls" "this" {
   bucket = aws_s3_bucket.this.id
   rule {
@@ -25,8 +53,9 @@ resource "aws_s3_bucket_ownership_controls" "this" {
   }
 }
 
-
 resource "aws_s3_bucket_acl" "this" {
+  depends_on = [aws_s3_bucket_ownership_controls.this]
+
   bucket = aws_s3_bucket.this.id
   acl    = "private"
 }
@@ -71,7 +100,6 @@ data "aws_iam_policy_document" "allow_access_from_cloudfront" {
     ]
 
     resources = [
-      aws_s3_bucket.this.arn,
       "${aws_s3_bucket.this.arn}/*",
     ]
   }
