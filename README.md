@@ -1,4 +1,4 @@
-# Holaa mundo 👋
+# Holaa 👋
 # Somos el grupo 8 !
 
 ![Itbalogo](https://github.com/Amparo1999/amparo1999/assets/116674796/cf4e4554-7b48-479c-b610-58ebedaf4f4c )
