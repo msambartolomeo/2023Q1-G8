@@ -1,7 +1,8 @@
 locals {
   # VPC
   vpc = {
-    name = "main-vpc"
+    name = var.vpc_name
+    cidr_block = var.vpc_cidr_block
     endpoints = {
       s3 = {
         service_name  = "com.amazonaws.${var.aws_region}.s3"

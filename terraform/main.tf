@@ -2,6 +2,7 @@ module "vpc" {
   source = "./modules/vpc"
 
   name          = local.vpc.name
+  cidr_block    = local.vpc.cidr_block
   vpc_endpoints = local.vpc.endpoints
 }
 
@@ -9,10 +10,10 @@ module "lambda" {
   source = "./modules/lambda"
 
   lambdas             = local.lambdas
-  vpc_id              = module.vpc.vpc.id
-  subnet_ids          = [for s in module.vpc.vpc.subnets : s.id]
+  vpc_id              = module.vpc.id
+  subnet_ids          = [for s in module.vpc.subnets : s.id]
   apigw_execution_arn = module.apigateway.execution_arn
-  vpc_endpoints       = module.vpc.vpc.vpc_endpoints
+  vpc_endpoints       = module.vpc.vpc_endpoints
 }
 
 module "s3" {
@@ -53,8 +54,8 @@ module "dynamodb" {
   range_key = "sk"
 
   billing_mode   = "PROVISIONED"
-  read_capacity  = local.dynamodb.read_capacity
-  write_capacity = local.dynamodb.write_capacity
+  read_capacity  = var.dynamodb_read_capacity
+  write_capacity = var.dynamodb_write_capacity
 
   attributes = [
     {

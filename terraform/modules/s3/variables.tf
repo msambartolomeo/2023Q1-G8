@@ -11,7 +11,7 @@ variable "website_configuration" {
 
 variable "objects" {
   type        = list(any)
-  description = "objects to insert into bucket"
+  description = "Objects to insert into bucket"
   default     = []
 }
 
@@ -22,5 +22,5 @@ variable "encription_algorithm" {
 
 variable "access_ids" {
   type        = list(string)
-  description = "ids of elements that will have read access to the bucket"
+  description = "Ids of elements that will have read access to the bucket"
 }

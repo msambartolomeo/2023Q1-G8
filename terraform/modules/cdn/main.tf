@@ -13,7 +13,7 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   origin {
-    domain_name = replace(var.apigw_invoke_url, "/^https?://([^/]*).*/", "$1")
+    domain_name = local.bucket_domain_name
     origin_id   = local.apigw_id
     origin_path = var.apigw_stage
 
@@ -27,7 +27,6 @@ resource "aws_cloudfront_distribution" "this" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "CloudFront CDN distribution"
   default_root_object = "index.html"
   price_class         = "PriceClass_100"
 
