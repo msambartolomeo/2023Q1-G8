@@ -45,7 +45,7 @@ Este módulo es externo. Se define en este toda la parte de networking que se de
 ## Y esta es nuestra arquitectura solo con las piezas elegidas 
 
 
-![image](https://github.com/Amparo1999/amparo1999/assets/116674796/b2e2aaa7-3e22-4505-891a-e289513b1f02)
+![image](arquitectura_modificada.png)
 
 
 
