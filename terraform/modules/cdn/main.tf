@@ -45,7 +45,7 @@ resource "aws_cloudfront_distribution" "this" {
     cached_methods   = ["GET", "HEAD"]
     cache_policy_id  = data.aws_cloudfront_cache_policy.optimized.id
 
-    viewer_protocol_policy = "allow-all"
+    viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 0
     max_ttl                = 0

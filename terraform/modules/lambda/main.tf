@@ -6,6 +6,7 @@ resource "aws_security_group" "lambda" {
   dynamic "ingress" {
     for_each = var.vpc_endpoints != [] ? [1] : []
     content {
+      description = "Allow HTTPS on cidrs from vpc_endpoints"
       from_port   = 443
       to_port     = 443
       protocol    = "tcp"
@@ -16,6 +17,7 @@ resource "aws_security_group" "lambda" {
   dynamic "egress" {
     for_each = var.vpc_endpoints != [] ? [1] : []
     content {
+      description = "Allow return from vpc_endpoints"
       from_port   = 0
       to_port     = 0
       protocol    = "-1"
