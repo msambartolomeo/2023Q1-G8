@@ -5,19 +5,20 @@
 
 *Buscamos poder gestionar y almacenar los registros médicos a través de una interfaz rápida y sencilla, para poder a través de clicks encontrar y actualizar la información de los pacientes*. 
 
-## Módulos utilizados
+## Elementos
+Para cada elemento se utilizo un modulo de terraform:
 
-* API Gateway: Recibe los request de CloudFront y los distribuye a las lambdas, en caso de que haya una respuesta la envia a CloudFront para que este se la mande al usuario.
+* API Gateway: Recibe los request de CloudFront y los distribuye a las lambdas. Se definen los endpoints en forma de json y se calcula su hash para redeployearlos cuando este archivo cambia
 
-* CloudFront: Se utiliza para agilizar los pedidos de los usuarios, este los distribuye al bucket de front end o a la API Gateway, segun sea el caso.
+* CloudFront: Se utiliza para agilizar los pedidos de los usuarios. Define las politicas de cacheo y el *routing* hacie el sitio web estático y hacia la api gateway
 
-* LAMBDA: Definimos 2 lambdas. Una se encarga de realizar un escaneo a la base de datos y la otra busca un registro en un buckets. 
+* LAMBDA: Definimos 2 lambdas. GetHistory y GetUser como ejemplo de las lambdas de nuestra aplicación. La primera se conecta al bucket de registros y la segunda a la tabla de dynamo de pacientes para mostrar que esta configurada la conexión. En un futuro se deberan crear el resto de lambdas y hacer la logica de nuestra app en ellas. Se hace el deploy de todas las lambdas en todas las subredes creadas por el modulo vpc
 
-* S3: Definimos 3 buckets. Uno para logs, uno para el frontend que te dirige al sitio y el ultimo es donde se guardan las historias medicas. 
+* S3: El modulo de S3 se utiliza para puede crear buckets que cumplan la funcion de website o que no la cumplan de manera condicional. Lo utilizamos dos veces, una para crear nuestra website estática que genera dos buckets uno para la website y otro para los logs (no se separo en bucket www y bucket dominio porque todavia no poseemos un dominio), y otro para guardar los recursos medicos.
 
-* VPC: Crea una VPC con subredes privadas en todas las AZ disponibles. Tambien crea los VPC endpoints necesarios (como por ejemplo, el que se utiliza para comunicarse con la base de datos).
+* VPC: El modulo vpc crea una VPC con subredes privadas en todas las AZ disponibles en la region. Tambien crea los VPC endpoints necesarios (como por ejemplo, el que se utiliza para comunicarse con la base de datos).
 
-* DynamoDB: Lo implementamos usando un modulo externo (link: terraform-aws-modules/dynamodb-table/aws). Este genera las tablas de la base de datos.
+* DynamoDB: Lo implementamos usando un modulo externo [terraform-aws-modules/dynamodb-table/aws](https://registry.terraform.io/modules/terraform-aws-modules/dynamodb-table/aws/latest). Este genera las tablas de pacientes y medicos de la base de datos.
 
 
 # Funciones 
