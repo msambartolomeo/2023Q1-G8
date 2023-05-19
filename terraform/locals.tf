@@ -84,4 +84,17 @@ locals {
 
   # S3
 
+  s3 = {
+    website = {
+      bucket_name = "cloud-website"
+      objects = [
+        for file in fileset("./resources/html/", "**/*.html") : {
+          key          = file
+          source       = "./resources/html/${file}"
+          etag         = filemd5("./resources/html/${file}")
+          content_type = "text/html"
+        }
+      ]
+    }
+  }
 }

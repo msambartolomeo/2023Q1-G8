@@ -18,7 +18,9 @@ module "lambda" {
 module "s3" {
   source = "./modules/s3"
 
-  CDN_OAI = [module.cloudfront.OAI]
+  bucket_name = local.s3.website.bucket_name
+  objects     = local.s3.website.objects
+  CDN_OAI     = module.cloudfront.OAI
 }
 
 module "apigateway" {

@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "this" {
-  bucket_prefix = var.bucket__prefix
+  bucket_prefix = var.bucket_name
 
   tags = {
     Name : var.bucket_name
@@ -63,7 +63,7 @@ data "aws_iam_policy_document" "allow_access_from_cloudfront" {
 
     principals {
       type        = "AWS"
-      identifiers = var.CDN_OAI
+      identifiers = [var.CDN_OAI]
     }
 
     actions = [
@@ -82,33 +82,12 @@ resource "aws_s3_bucket_policy" "cloudfront_policy" {
   policy = data.aws_iam_policy_document.allow_access_from_cloudfront.json
 }
 
-# TODO: make this pretty
-resource "aws_s3_object" "html" {
-  for_each = fileset("./resources/html/", "**/*.html")
+resource "aws_s3_object" "this" {
+  count = length(var.objects)
 
   bucket       = aws_s3_bucket.this.id
-  key          = each.value
-  source       = "./resources/html/${each.value}"
-  etag         = filemd5("./resources/html/${each.value}")
-  content_type = "text/html"
-}
-
-resource "aws_s3_object" "css" {
-  for_each = fileset("./resources/css/", "**/*.css")
-
-  bucket       = aws_s3_bucket.this.id
-  key          = each.value
-  source       = "./resources/css/${each.value}"
-  etag         = filemd5("./resources/css/${each.value}")
-  content_type = "text/css"
-}
-
-resource "aws_s3_object" "js" {
-  for_each = fileset("./resources/js/", "**/*.js")
-
-  bucket       = aws_s3_bucket.this.id
-  key          = each.value
-  source       = "./resources/js/${each.value}"
-  etag         = filemd5("./resources/js/${each.value}")
-  content_type = "application/javascript"
+  key          = var.objects[count.index].key
+  source       = var.objects[count.index].source
+  etag         = var.objects[count.index].etag
+  content_type = var.objects[count.index].content_type
 }
