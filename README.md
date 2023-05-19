@@ -14,6 +14,7 @@
 
 * APIGW 
 
+Se realizo la implementación de la API lo que hara que se pueda acceder en un entorno especifico.
 *  CDN 
 
 * LAMBDA 
