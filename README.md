@@ -1,51 +1,44 @@
-# Holaa 👋
-# Somos el grupo 8 !
+![Itbalogo](itbalogo.png)
 
-![Itbalogo](https://github.com/Amparo1999/amparo1999/assets/116674796/cf4e4554-7b48-479c-b610-58ebedaf4f4c )
-
-
-
-
+# TP 3 grupo 8
 ## ¿De que trata nuestro trabajo?
 
-*Buscamos poder gestionar y almacenar los registros médicos a través de una interfaz rápida y sencilla, para poder a través de clics encontrar y actualizar la información de los pacientes*. 
+*Buscamos poder gestionar y almacenar los registros médicos a través de una interfaz rápida y sencilla, para poder a través de clicks encontrar y actualizar la información de los pacientes*. 
 
-## Módulos utilizados 
+## Módulos utilizados
 
-* APIGW 
+* API Gateway: Recibe los request de CloudFront y los distribuye a las lambdas, en caso de que haya una respuesta la envia a CloudFront para que este se la mande al usuario.
 
-Construye una API REST que va recibir requests una de ingreso y otra de egreso.Depende del request a la lambdas que ira.
+* CloudFront: Se utiliza para agilizar los pedidos de los usuarios, este los distribuye al bucket de front end o a la API Gateway, segun sea el caso.
 
-* CloudFront 
+* LAMBDA: Definimos 2 lambdas. Una se encarga de realizar un escaneo a la base de datos y la otra busca un registro en un buckets. 
 
-Funciona como CDN y realiza caché de la API y del S3 (que hostea el sitio estático)
+* S3: Definimos 3 buckets. Uno para logs, uno para el frontend que te dirige al sitio y el ultimo es donde se guardan las historias medicas. 
 
-* LAMBDA 
+* VPC: Crea una VPC con subredes privadas en todas las AZ disponibles. Tambien crea los VPC endpoints necesarios (como por ejemplo, el que se utiliza para comunicarse con la base de datos).
 
-Definimos 2 lambdas. Una se encarga de realizar escrituras al ingreso y la otra de realizar lecturas salida del usuario. 
-
-* S3 
-
-Definimos 3 cubos. Uno para logs y dos para el frontend que te dirige al sitio 
-
-* VPC 
-
-Este módulo es externo. Se define en este toda la parte de networking que se detalla en el diagrama de la arquitectura (el cual se encuentra al final de este documento).
-
+* DynamoDB: Lo implementamos usando un modulo externo (link: terraform-aws-modules/dynamodb-table/aws). Este genera las tablas de la base de datos.
 
 
 # Funciones 
 
+Se usaron varias funciones. Se destacan:
 
+* Flatten: Lo utilizamos para concatenar las 2 listas de CIDR_blocks que teniamos, ya que el security group de la lambda nos pedia que esten todos en la misma lista.
 
+* Cidersubnet: Lo utilizamos para conseguir los CIDR block de las subredes a partir de CIDR block de la vpc.
 
+* Filebase64sha256: Lo utilizamos para cuando se hace un apply terraform se detecte que se cambio el codigo de la lambda, y este aplique el cambio. 
 
-# Arquitecturar     
+* Replace: Lo utilizamos para extraer el dominio de la API Gateway de la variable invoke_url y utilizar esta como domain_name al conectarlo con la CDN.
 
-## Y esta es nuestra arquitectura solo con las piezas elegidas 
+# Meta-argumentos
 
+* Count: Lo utilizamos para dos funciones diferentes. Por un lado, se uso en el modulo vpc para crear subredes segun la cantidad de AZ disponibles. Por otro lado, se uso en los buckets s3 como boolean para crear la configuracion de pagina web en caso de que se provea la informacion necesaria.
 
+* For each: Lo utilizamos para generar las lambdas que se pasan en la variable `var.lambdas` y para asignarle los permisos necesarios.
+
+* Lifecycle: Lo utilizamos para especificarle a terraform que debe crear un nuevo recurso de API Gateway antes de eliminar uno existente.
+
+# Arquitectura     
 ![image](arquitectura_modificada.png)
-
-
-
