@@ -1,4 +1,5 @@
 locals {
+  # VPC
   vpc = {
     name = "main-vpc"
     endpoints = {
@@ -80,4 +81,7 @@ locals {
     read_capacity  = 5
     write_capacity = 5
   }
+
+  # S3
+
 }
