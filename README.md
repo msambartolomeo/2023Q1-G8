@@ -5,14 +5,13 @@
 
 *Buscamos poder gestionar y almacenar los registros médicos a través de una interfaz rápida y sencilla, para poder a través de clicks encontrar y actualizar la información de los pacientes*. 
 
-## Elementos
-Para cada elemento se utilizo un modulo de terraform:
+## Modulos utilizados
 
 * API Gateway: Recibe los request de CloudFront y los distribuye a las lambdas. Se definen los endpoints en formato json y se calcula su hash para redeployearlos cuando haya algun cambio
 
 * CloudFront: Se utiliza para agilizar los pedidos de los usuarios. Define las politicas de cacheo y el *routing* hacie el sitio web estático y hacia la api gateway
 
-* LAMBDA: Definimos 2 lambdas. GetHistory y GetUser como ejemplo de las lambdas de nuestra aplicación. La primera conecta al bucket de registros y obtiene un historial medico *harcoded* y la segunda se conecta a la tabla de dynamo de pacientes y simplemente hace un *scan*. Si bien no tienen la logica de su nombre estan hechas para mostrar que esta configurada la conexión. En un futuro se deberan crear el resto de lambdas y hacer la logica de nuestra app en ellas. Se hace el deploy de todas las lambdas en todas las subredes creadas por el modulo vpc
+* Lambda: Definimos 2 lambdas. GetHistory y GetUser como ejemplo de las lambdas de nuestra aplicación. La primera conecta al bucket de registros y obtiene un historial medico *harcoded* y la segunda se conecta a la tabla de dynamo de pacientes y simplemente hace un *scan*. Si bien no tienen la logica de su nombre estan hechas para mostrar que esta configurada la conexión. En un futuro se deberan crear el resto de lambdas y hacer la logica de nuestra app en ellas. Se hace el deploy de todas las lambdas en todas las subredes creadas por el modulo vpc
 
 * S3: El modulo de S3 se utiliza para puede crear buckets que cumplan la funcion de website o que no la cumplan de manera condicional. Lo utilizamos dos veces, una para crear nuestra website estática que genera dos buckets uno para la website y otro para los logs (no se separo en bucket www y bucket dominio porque todavia no poseemos un dominio), y otro para guardar los historiales médicos.
 
@@ -20,6 +19,13 @@ Para cada elemento se utilizo un modulo de terraform:
 
 * DynamoDB: Lo implementamos usando un modulo externo [terraform-aws-modules/dynamodb-table/aws](https://registry.terraform.io/modules/terraform-aws-modules/dynamodb-table/aws/latest). Este genera las tablas de pacientes y medicos de la base de datos.
 
+# Componentes a evaluar
+- Lambda
+- Api Gateway
+- Cloudfront
+- S3
+- VPC
+- DynamoDB
 
 # Funciones 
 
