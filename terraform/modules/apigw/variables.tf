@@ -9,6 +9,6 @@ variable "stage_name" {
 }
 
 variable "name" {
-  type = string
+  type        = string
   description = "API-GW name"
 }
