@@ -19,22 +19,22 @@ locals {
   lambdas = {
     lambda = {
       name    = "lambda"
-      path    = "./resources/lambda/lambda.zip"
-      hash    = filebase64sha256("./resources/lambda/lambda.zip")
+      path    = "../resources/lambda/lambda.zip"
+      hash    = filebase64sha256("../resources/lambda/lambda.zip")
       handler = "lambda.handler"
       runtime = "python3.9"
     },
     getUser = {
       name    = "getUser"
-      path    = "./resources/lambda/getUser.zip"
-      hash    = filebase64sha256("./resources/lambda/getUser.zip")
+      path    = "../resources/lambda/getUser.zip"
+      hash    = filebase64sha256("../resources/lambda/getUser.zip")
       handler = "getUser.handler"
       runtime = "python3.9"
     }
     getHistory = {
       name    = "getHistory"
-      path    = "./resources/lambda/getHistory.zip"
-      hash    = filebase64sha256("./resources/lambda/getHistory.zip")
+      path    = "../resources/lambda/getHistory.zip"
+      hash    = filebase64sha256("../resources/lambda/getHistory.zip")
       handler = "getHistory.handler"
       runtime = "python3.9"
       environment = {
@@ -110,10 +110,10 @@ locals {
       bucket_name          = "cloud-website"
       encription_algorithm = "AES256"
       objects = [
-        for file in fileset("./resources/html/", "**/*.html") : {
+        for file in fileset("../resources/html/", "**/*.html") : {
           key          = file
-          source       = "./resources/html/${file}"
-          etag         = filemd5("./resources/html/${file}")
+          source       = "../resources/html/${file}"
+          etag         = filemd5("../resources/html/${file}")
           content_type = "text/html"
         }
       ]
@@ -127,10 +127,10 @@ locals {
       encription_algorithm = "AES256"
       # NOTE: Example record for testing
       objects = [
-        for file in fileset("./resources/medical-records/", "**/*.pdf") : {
+        for file in fileset("../resources/medical-records/", "**/*.pdf") : {
           key          = file
-          source       = "./resources/medical-records/${file}"
-          etag         = filemd5("./resources/medical-records/${file}")
+          source       = "../resources/medical-records/${file}"
+          etag         = filemd5("../resources/medical-records/${file}")
           content_type = "application/pdf"
         }
       ]
