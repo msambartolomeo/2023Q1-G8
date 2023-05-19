@@ -8,6 +8,7 @@
 ## Deployment
 Para deployear el repositorio se necesita proveer un archivo terraform.tfvars con las variables necesarias.
 Se provee un archivo de ejemplo [terraform.example.tfvars](./terraform/organization/terraform.example.tfvars)
+(Si hay un problema de nombres de los buckets esto puede ser editado en el archivo de variables)
 
 ## Modulos utilizados
 
