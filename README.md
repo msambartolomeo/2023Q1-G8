@@ -8,7 +8,7 @@
 
 ## ¿De que trata nuestro trabajo?
 
-*Buscamos poder gestionar y almacenar los registros médicos a través de una interfaz rápida y sencilla, para poder a través de clics encontrar y actualizar la información de tus pacientes*. 
+*Buscamos poder gestionar y almacenar los registros médicos a través de una interfaz rápida y sencilla, para poder a través de clics encontrar y actualizar la información de los pacientes*. 
 
 ## Módulos utilizados 
 
@@ -40,15 +40,10 @@ Este módulo es externo. Se define en este toda la parte de networking que se de
 
 # Arquitecturar     
 
-## Esta es nuestra arquitectura
-
-![Foto de la aquitectura](https://github.com/Amparo1999/amparo1999/assets/116674796/747feeef-d7b9-4051-81d4-a1762bf6c060)
-
-
 ## Y esta es nuestra arquitectura solo con las piezas elegidas 
 
 
-![Foto de la aquitectura](https://github.com/Amparo1999/amparo1999/assets/116674796/74f5ac98-a21a-41a3-8a38-23148b4d5f83)
+![image](https://github.com/Amparo1999/amparo1999/assets/116674796/b2e2aaa7-3e22-4505-891a-e289513b1f02)
 
 
 
