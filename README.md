@@ -17,7 +17,7 @@ Se provee un archivo de ejemplo [terraform.example.tfvars](./terraform/organizat
 
 * Lambda: Definimos 2 lambdas. GetHistory y GetUser como ejemplo de las lambdas de nuestra aplicación. La primera conecta al bucket de registros y obtiene un historial medico *harcoded* y la segunda se conecta a la tabla de dynamo de pacientes y simplemente hace un *scan*. Si bien no tienen la logica de su nombre estan hechas para mostrar que esta configurada la conexión. En un futuro se deberan crear el resto de lambdas y hacer la logica de nuestra app en ellas. Se hace el deploy de todas las lambdas en todas las subredes creadas por el modulo vpc
 
-* S3: El modulo de S3 se utiliza para puede crear buckets que cumplan la funcion de website o que no la cumplan de manera condicional. Lo utilizamos dos veces, una para crear nuestra website estática que genera dos buckets uno para la website y otro para los logs (no se separo en bucket www y bucket dominio porque todavia no poseemos un dominio), y otro para guardar los historiales médicos.
+* S3: El modulo de S3 se utiliza para puede crear buckets que cumplan la funcion de website o que no la cumplan de manera condicional. Lo utilizamos tres veces, una para crear nuestra website estática, otro para los logs de esta (no se separo en bucket www y bucket dominio porque todavia no poseemos un dominio), y otro para guardar los historiales médicos.
 
 * VPC: El modulo vpc crea una VPC con subredes privadas en todas las AZ disponibles en la region. Tambien crea los VPC endpoints necesarios (como por ejemplo, el que se utiliza para comunicarse con la base de datos).
 
