@@ -1,36 +1,37 @@
 resource "aws_security_group" "lambda" {
   name        = local.security_group_name
-  description = "Generic Lambda Security Group"
+  description = local.security_group_description
   vpc_id      = var.vpc_id
 
-  # TODO: add rules if needed
-  ingress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+  dynamic "ingress" {
+    for_each = var.vpc_endpoints != [] ? [1] : []
+    content {
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      cidr_blocks = flatten([for vpc_endpoint in var.vpc_endpoints : vpc_endpoint.cidr_blocks])
+    }
   }
 
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+  dynamic "egress" {
+    for_each = var.vpc_endpoints != [] ? [1] : []
+    content {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = flatten([for vpc_endpoint in var.vpc_endpoints : vpc_endpoint.cidr_blocks])
+    }
   }
 }
 
-data "aws_iam_role" "lambda" {
-  name = "LabRole"
-}
+
 
 resource "aws_lambda_function" "this" {
   for_each = var.lambdas
 
   filename         = each.value.path
   function_name    = each.value.name
-  role             = data.aws_iam_role.lambda.arn
+  role             = local.lambda_iam_role
   handler          = each.value.handler
   runtime          = each.value.runtime
   source_code_hash = each.value.hash
@@ -43,7 +44,6 @@ resource "aws_lambda_function" "this" {
   tags = {
     Name = "lambda-${each.value.name}"
   }
-
   depends_on = [aws_security_group.lambda]
 }
 

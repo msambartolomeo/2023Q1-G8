@@ -10,5 +10,6 @@ output "vpc" {
         cidr = subnet.cidr_block
       }
     ]
+    vpc_endpoints = [for e in aws_vpc_endpoint.this : e]
   }
 }

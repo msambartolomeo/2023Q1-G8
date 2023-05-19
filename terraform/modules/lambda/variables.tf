@@ -13,3 +13,7 @@ variable "subnet_ids" {
 variable "apigw_execution_arn" {
   type = string
 }
+
+variable "vpc_endpoints" {
+  type = list(any)
+}

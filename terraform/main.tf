@@ -12,6 +12,7 @@ module "lambda" {
   vpc_id              = module.vpc.vpc.id
   subnet_ids          = [for s in module.vpc.vpc.subnets : s.id]
   apigw_execution_arn = module.apigateway.execution_arn
+  vpc_endpoints       = module.vpc.vpc.vpc_endpoints
 }
 
 module "s3" {
