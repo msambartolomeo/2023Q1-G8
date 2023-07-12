@@ -1,5 +1,5 @@
 import { FC } from "react";
-import tp4_60135PDF from "../../public/tp4_60135.pdf";
+import tp4_60135PDF from "../assets/tp4_60135.pdf";
 
 const FileReader: FC = () => {
 
