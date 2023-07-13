@@ -30,7 +30,7 @@ locals {
       hash    = filebase64sha256("../resources/lambda/getUser.zip")
       handler = "getUser.handler"
       runtime = "python3.9"
-    }
+    },
     getHistory = {
       name    = "getHistory"
       path    = "../resources/lambda/getHistory.zip"
@@ -40,7 +40,14 @@ locals {
       environment = {
         BUCKET_NAME = module.s3["records"].bucket_id
       }
-    }
+    },
+    addPatient = {
+      name    = "addPatient"
+      path    = "../resources/lambda/addPatient.zip"
+      hash    = filebase64sha256("../resources/lambda/addPatient.zip")
+      handler = "addPatient.handler"
+      runtime = "python3.9"
+    },
   }
 
   # api gateway
@@ -72,6 +79,14 @@ locals {
               payloadFormatVersion = "1.0"
               type                 = "aws_proxy"
               uri                  = module.lambda.lambdas["getUser"].invoke_arn
+            }
+          },
+          post = {
+            x-amazon-apigateway-integration = {
+              httpMethod           = "POST"
+              payloadFormatVersion = "1.0"
+              type                 = "aws_proxy"
+              uri                  = module.lambda.lambdas["addPatient"].invoke_arn
             }
           }
         }
