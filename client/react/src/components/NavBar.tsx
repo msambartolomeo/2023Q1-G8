@@ -10,6 +10,8 @@ import {
   import { Container } from "@mui/system";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
+import LoginButton from "./LoginButton";
+import SignUpButton from "./SignUpButton";
   
   export const NavBar: FC= () => {
     const navigate = useNavigate();
@@ -38,12 +40,8 @@ import { useNavigate } from "react-router-dom";
                 </Grid>
                 <Grid item>
                     <Stack direction="row" spacing={2}>
-                      <Button variant="contained">
-                        <Typography>Login</Typography>
-                      </Button>
-                      <Button  variant="contained">
-                        <Typography>Registro</Typography>
-                      </Button>
+                      <LoginButton />
+                      <SignUpButton />
                     </Stack>
                 </Grid>
               </Grid>
