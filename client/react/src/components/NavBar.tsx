@@ -6,8 +6,8 @@ import {
     Stack,
     Toolbar,
     Typography,
-  } from "@mui/material";
-  import { Container } from "@mui/system";
+} from "@mui/material";
+import { Container } from "@mui/system";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginButton from "./LoginButton";
