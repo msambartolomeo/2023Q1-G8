@@ -5,7 +5,7 @@ const DoctorPage: FC = () => {
     //useGet("/users/a@g.com/history");
     useEffect(() =>{
         console.log("hola, estoy aca");
-        axiosInstance.get("/users/a@g.com/history").then((response) => console.log(response.status)).catch((err) => console.log(err));
+        axiosInstance.get("/users/bXNhbWJhcnRvbG9tZW9AaXRiYS5lZHUuYXI=/history").then((response) => console.log(response.data)).catch((err) => console.log(err));
     },[])
     return(
         <div>

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "sync": "aws s3 sync dist 's3://website-medical-records-bucket-cloud-g8-1/'",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -15,6 +16,7 @@
     "@mui/material": "^5.14.0",
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",
+    "jwt-decode": "^3.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-pdf": "^7.1.2",

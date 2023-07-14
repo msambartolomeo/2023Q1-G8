@@ -1,11 +1,36 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { pacientPool_tokenEndpoint, pacientUserPool_client_id, pacientUserPool_redirectURL } from '../constantx';
+import { doctorUserPool_id, pacientPool_tokenEndpoint, pacientUserPool_client_id, pacientUserPool_id, pacientUserPool_redirectURL } from '../constantx';
+import jwt_decode from 'jwt-decode';
+
+export interface idTokenInfo {
+  at_hash: string;
+  aud: string;
+  auth_time: number;
+  cognito:{username: string};
+  email: string;
+  email_verified: boolean;
+  event_id: string;
+  exp: number;
+  iat: number;
+  iss: string;
+  jti: string;
+  origin_jti: string;
+  sub: string;
+  token_use: string;
+}
 
 const useCallBack = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const extractUPID = (id_token: string) =>{
+    var decodedToken = jwt_decode(id_token) as idTokenInfo;
+    const parts = decodedToken.iss.split("/");
+    const userPoolId = parts[parts.length - 1];
+    return userPoolId;
+  }
 
   const exchangeCodeForTokens = async (code: string) => {
     try {
@@ -20,13 +45,18 @@ const useCallBack = () => {
       },
       });
       const { access_token, id_token, refresh_token } = response.data;
-
       // Store the tokens securely (e.g., in session storage or cookies)
       localStorage.setItem('accessToken', access_token);
       localStorage.setItem('idToken', id_token);
       localStorage.setItem('refreshToken', refresh_token);
-
-      navigate("/doctor/pacients")
+      const userPoolId = extractUPID(id_token);
+      if(userPoolId === pacientUserPool_id) {
+        navigate('/history');
+      }else if(userPoolId === doctorUserPool_id){
+        navigate('/doctor/pacients');
+      }else{
+        navigate('/*');
+      }
 
     } catch (error) {
       console.error('Error exchanging code for tokens:', error);
@@ -36,7 +66,6 @@ const useCallBack = () => {
 
   useEffect(() => {
     const code = new URLSearchParams(location.search).get('code');
-
     if (code) {
       exchangeCodeForTokens(code);
     } else {

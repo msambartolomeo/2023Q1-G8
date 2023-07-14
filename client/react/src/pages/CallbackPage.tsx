@@ -6,9 +6,7 @@ const CallBackPage: FC = () => {
     useCallBack();
 
     return(
-        <div>
-            <h1>CallBack</h1>
-        </div>
+        <></>
     );
 }
 
