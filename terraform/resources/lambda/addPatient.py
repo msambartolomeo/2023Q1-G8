@@ -1,3 +1,4 @@
+import base64
 import json
 import logging
 import os
@@ -14,6 +15,7 @@ def handler(event, context):
     try:
         body = json.loads(event["body"])
         email = body["email"]
+        userId = base64.b64encode(email.encode("utf-8")).decode("utf-8")
     except:
         return {"statusCode": 400}
 
@@ -21,15 +23,13 @@ def handler(event, context):
         dynamo.put_item(
             TableName="patients-table",
             Item={
-                "pk": {"S": email},
-                "sk": {"S": "RECORD_PATH"},
+                "pk": {"S": userId},
+                "sk": {"S": email},
                 "path": {"S": ""},
             },
             ConditionExpression="attribute_not_exists(pk) AND attribute_not_exists(sk)",
         )
     except:
         return {"statusCode": 409}
-
-    logger.info(response)
 
     return {"statusCode": 201}
