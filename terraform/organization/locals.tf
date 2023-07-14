@@ -52,9 +52,10 @@ locals {
 
   # api gateway
   apigateway = {
-    name       = "api-gw"
-    stage_name = "prodction"
-    base_path  = "api"
+    name             = "api-gw"
+    stage_name       = "prodction"
+    base_path        = "api"
+    user_pools_names = ["Paciente", "Doctor"]
     template_file = jsonencode({
       openapi : "3.0.1"
       info = {
@@ -73,14 +74,6 @@ locals {
           }
         },
         "/api/users" = {
-          get = {
-            x-amazon-apigateway-integration = {
-              httpMethod           = "POST"
-              payloadFormatVersion = "1.0"
-              type                 = "aws_proxy"
-              uri                  = module.lambda.lambdas["getUser"].invoke_arn
-            }
-          },
           post = {
             x-amazon-apigateway-integration = {
               httpMethod           = "POST"
@@ -90,7 +83,17 @@ locals {
             }
           }
         }
-        "/api/history" = {
+        "/api/users/{userId}" = {
+          get = {
+            x-amazon-apigateway-integration = {
+              httpMethod           = "POST"
+              payloadFormatVersion = "1.0"
+              type                 = "aws_proxy"
+              uri                  = module.lambda.lambdas["getUser"].invoke_arn
+            }
+          },
+        }
+        "/api/users/{userId}/history" = {
           get = {
             x-amazon-apigateway-integration = {
               httpMethod           = "POST"
@@ -101,7 +104,6 @@ locals {
           }
         }
     } })
-
   }
 
   # Dynamodb
