@@ -11,7 +11,6 @@ import { Container } from "@mui/system";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginButton from "./LoginButton";
-import SignUpButton from "./SignUpButton";
   
   export const NavBar: FC= () => {
     const navigate = useNavigate();

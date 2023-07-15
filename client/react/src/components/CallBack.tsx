@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { doctorUserPool_id, pacientPool_tokenEndpoint, pacientUserPool_client_id, pacientUserPool_id, pacientUserPool_redirectURL } from '../constantx';
+import { doctorPool_tokenEndpoint, doctorUserPool_client_id, doctorUserPool_id, doctorUserPool_redirectURL, pacientPool_tokenEndpoint, pacientUserPool_client_id, pacientUserPool_id, pacientUserPool_redirectURL } from '../constantx';
 import jwt_decode from 'jwt-decode';
 
 export interface idTokenInfo {
@@ -21,7 +21,7 @@ export interface idTokenInfo {
   token_use: string;
 }
 
-const useCallBack = () => {
+const useCallBack = (role: string) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -34,11 +34,12 @@ const useCallBack = () => {
 
   const exchangeCodeForTokens = async (code: string) => {
     try {
-      const response = await axios.post(pacientPool_tokenEndpoint, new URLSearchParams({
+      const response = await axios.post(role === "doctor" ? doctorPool_tokenEndpoint : pacientPool_tokenEndpoint,
+        new URLSearchParams({
         grant_type: 'authorization_code',
-        client_id: pacientUserPool_client_id,
+        client_id: role === "doctor" ? doctorUserPool_client_id : pacientUserPool_client_id,
         code,
-        redirect_uri: pacientUserPool_redirectURL,
+        redirect_uri: role === "doctor" ? doctorUserPool_redirectURL : pacientUserPool_redirectURL,
       }).toString(), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -50,6 +51,7 @@ const useCallBack = () => {
       localStorage.setItem('idToken', id_token);
       localStorage.setItem('refreshToken', refresh_token);
       const userPoolId = extractUPID(id_token);
+      console.log(userPoolId);
       if(userPoolId === pacientUserPool_id) {
         navigate('/history');
       }else if(userPoolId === doctorUserPool_id){

@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button';
 import { FC, useState } from "react";
 import { doctorUserPool_loginURL, pacientUserPool_loginURL } from '../constantx';
-import { Box, Grid, Modal, Typography } from '@mui/material';
+import { Grid, Modal, Typography } from '@mui/material';
 
 const LoginButton: FC = () => {
 

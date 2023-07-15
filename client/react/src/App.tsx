@@ -13,7 +13,8 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />} />
-          <Route path="/callback" element={<CallBackPage/>}/>
+          <Route path="/callback" element={<CallBackPage role={"pacient"}/>}/>
+          <Route path="/doctor/callback" element={<CallBackPage role={"doctor"} />}/>
           <Route path="/doctor/pacients" element={<DoctorPage />} />
           <Route path="/history" element={<FileReader />} />
           <Route path="*" element={<PageNotFound />} />
