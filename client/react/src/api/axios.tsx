@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { api_URL, pacientPool_tokenEndpoint } from '../constantx';
+import { api_URL, doctorPool_tokenEndpoint, pacientPool_tokenEndpoint, pacientUserPool_id } from '../constantx';
+import { accessTokenInfo, idTokenInfo } from '../components/CallBack';
+import jwt_decode from 'jwt-decode';
 
 export const axiosInstance = axios.create({
     baseURL: api_URL,
@@ -24,6 +26,12 @@ const getIdToken = () => {
     }
     return idToken;
 }
+const extractUPID = (id_token: string) =>{
+  var decodedToken = jwt_decode(id_token) as idTokenInfo;
+  const parts = decodedToken.iss.split("/");
+  const userPoolId = parts[parts.length - 1];
+  return userPoolId;
+}
 
 // Add an interceptor to handle token expiration and request a new token
 axiosInstance.interceptors.response.use(
@@ -38,15 +46,22 @@ axiosInstance.interceptors.response.use(
         originalRequest._retry = true;
   
         try {
-          const response = await axios.post(pacientPool_tokenEndpoint, {
+          const userPoolId = extractUPID(localStorage.getItem('idToken')!);
+          const access_token = localStorage.getItem('accessToken');
+          const tokenInfo = jwt_decode(access_token!) as accessTokenInfo;
+          const client_id = tokenInfo.client_id;          
+          const tokenEndpoint = userPoolId === pacientUserPool_id? pacientPool_tokenEndpoint : doctorPool_tokenEndpoint;
+          const response = await axios.post(tokenEndpoint, 
+            {
             grant_type: 'refresh_token',
+            client_id: client_id,
             refreshToken: localStorage.getItem('refreshToken'),
           });
   
           // Update the tokens in storage
           localStorage.setItem('accessToken', response.data.accessToken);
           localStorage.setItem('refreshToken', response.data.refreshToken);
-  
+          localStorage.setItem('idToken', response.data.idToken)
           // Retry the original request with the new token
           originalRequest.headers['Authorization'] = `Bearer ${response.data.idToken}`;
           return axiosInstance(originalRequest);

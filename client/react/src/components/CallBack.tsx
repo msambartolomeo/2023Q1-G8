@@ -1,8 +1,9 @@
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { doctorPool_tokenEndpoint, doctorUserPool_client_id, doctorUserPool_id, doctorUserPool_redirectURL, pacientPool_tokenEndpoint, pacientUserPool_client_id, pacientUserPool_id, pacientUserPool_redirectURL } from '../constantx';
 import jwt_decode from 'jwt-decode';
+import AuthContext from '../api/useAuth';
 
 export interface idTokenInfo {
   at_hash: string;
@@ -21,9 +22,25 @@ export interface idTokenInfo {
   token_use: string;
 }
 
+export interface accessTokenInfo {
+  sub: string;
+  iss: string;
+  version: number;
+  client_id: string;
+  origin_jti: string;
+  toke_use: string;
+  scope: string;
+  auth_time: number;
+  exp: number;
+  iat: number;
+  jti: string;
+  username: string;
+}
+
 const useCallBack = (role: string) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const {handleUpdateAuth} = useContext(AuthContext)
 
   const extractUPID = (id_token: string) =>{
     var decodedToken = jwt_decode(id_token) as idTokenInfo;
@@ -51,7 +68,6 @@ const useCallBack = (role: string) => {
       localStorage.setItem('idToken', id_token);
       localStorage.setItem('refreshToken', refresh_token);
       const userPoolId = extractUPID(id_token);
-      console.log(userPoolId);
       if(userPoolId === pacientUserPool_id) {
         navigate('/history');
       }else if(userPoolId === doctorUserPool_id){
@@ -59,7 +75,7 @@ const useCallBack = (role: string) => {
       }else{
         navigate('/*');
       }
-
+      handleUpdateAuth();
     } catch (error) {
       console.error('Error exchanging code for tokens:', error);
       // Handle error and navigate to an error page if needed
