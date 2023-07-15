@@ -42,7 +42,7 @@ def handler(event, context):
 
     return {
         "statusCode": 200,
-        "body": json.dumps({"url": url}),
+        "body": json.dumps({"url": url, "event": event}),
         "headers": {
             "Content-Type": "application/json",
         },

@@ -19,5 +19,5 @@ done
 
 cd ../../organization
 
-terraform apply --target=module.vpc --target=module.lambda --target=module.apigateway -var-file="${var}" -auto-approve
+terraform apply --target=module.lambda -var-file="${var}" -auto-approve
 

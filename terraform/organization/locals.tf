@@ -48,6 +48,13 @@ locals {
       handler = "addPatient.handler"
       runtime = "python3.9"
     },
+    getPatients = {
+      name    = "getPatients"
+      path    = "../resources/lambda/getPatients.zip"
+      hash    = filebase64sha256("../resources/lambda/getPatients.zip")
+      handler = "getPatients.handler"
+      runtime = "python3.9"
+    },
   }
 
   # api gateway
@@ -100,6 +107,16 @@ locals {
               payloadFormatVersion = "1.0"
               type                 = "aws_proxy"
               uri                  = module.lambda.lambdas["getHistory"].invoke_arn
+            }
+          }
+        }
+        "/api/doctors/{userId}/patients" = {
+          get = {
+            x-amazon-apigateway-integration = {
+              httpMethod           = "POST"
+              payloadFormatVersion = "1.0"
+              type                 = "aws_proxy"
+              uri                  = module.lambda.lambdas["getPatients"].invoke_arn
             }
           }
         }
