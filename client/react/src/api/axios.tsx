@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { api_URL } from '../constantx';
+import { api_URL, pacientPool_tokenEndpoint } from '../constantx';
 
 export const axiosInstance = axios.create({
     baseURL: api_URL,
@@ -38,7 +38,8 @@ axiosInstance.interceptors.response.use(
         originalRequest._retry = true;
   
         try {
-          const response = await axios.post('/token/refresh', {
+          const response = await axios.post(pacientPool_tokenEndpoint, {
+            grant_type: 'refresh_token',
             refreshToken: localStorage.getItem('refreshToken'),
           });
   

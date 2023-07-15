@@ -41,7 +41,6 @@ import SignUpButton from "./SignUpButton";
                 <Grid item>
                     <Stack direction="row" spacing={2}>
                       <LoginButton />
-                      <SignUpButton />
                     </Stack>
                 </Grid>
               </Grid>
