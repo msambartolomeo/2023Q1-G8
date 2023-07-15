@@ -20,6 +20,11 @@ def handler(event, context):
         return {"statusCode": 400}
 
     try:
+        doctorsEmail = event["requestContext"]["authorizer"]["claims"]["email"]
+    except:
+        return {"statusCode": 403}
+
+    try:
         dynamo.put_item(
             TableName="patients-table",
             Item={
@@ -29,7 +34,15 @@ def handler(event, context):
             },
             ConditionExpression="attribute_not_exists(pk) AND attribute_not_exists(sk)",
         )
-    except:
+        dynamo.put_item(
+            TableName="doctors-table",
+            Item={
+                "pk": {"S": doctorsEmail},
+                "sk": {"S": userId},
+            },
+            ConditionExpression="attribute_not_exists(pk) AND attribute_not_exists(sk)",
+        )
+    except Exception as e:
         return {"statusCode": 409}
 
     return {"statusCode": 201}
