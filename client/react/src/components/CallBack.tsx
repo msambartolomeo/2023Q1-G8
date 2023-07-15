@@ -73,11 +73,12 @@ const useCallBack = (role: string) => {
       }else if(userPoolId === doctorUserPool_id){
         navigate('/doctor/pacients');
       }else{
-        navigate('/*');
+        navigate('/401');
       }
       handleUpdateAuth();
     } catch (error) {
       console.error('Error exchanging code for tokens:', error);
+      navigate('/401');
       // Handle error and navigate to an error page if needed
     }
   };
@@ -88,6 +89,7 @@ const useCallBack = (role: string) => {
       exchangeCodeForTokens(code);
     } else {
       console.error('Missing authorization code');
+      navigate('/');
       // Handle missing code and navigate to an error page if needed
     }
   }, [navigate, location.search]);
