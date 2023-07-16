@@ -1,19 +1,30 @@
-import { FC, useContext, useEffect } from "react";
-import tp4_60135PDF from "../assets/tp4_60135.pdf";
-import AuthContext, { emptyAuth } from "../api/useAuth";
+import { FC, useEffect, useState } from "react";
+import { getHistory } from "../hooks/getHistory";
+import jwt_decode from 'jwt-decode';
+import { idTokenInfo } from "../components/CallBack";
+import { Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../api/axios";
 
-const FileReader: FC = () => {
-    const { auth } = useContext(AuthContext);
+type Props = {
+    pacientEmail?: string;
+}
+
+const FileReader: FC<Props> = ({pacientEmail}) => {
+    const [email, setEmail] = useState("");
     const navigate = useNavigate();
-
     useEffect(() => {
-        if(auth === emptyAuth){
-            navigate("/401")
+        const idToken = localStorage.getItem("idToken");
+        if(!idToken){
+            navigate('/401');
         }
-        axiosInstance.get("/users/bXNhbWJhcnRvbG9tZW9AaXRiYS5lZHUuYXI=/history").then((response) => console.log(response.data)).catch((err) => console.log(err));
+        if(pacientEmail){
+            setEmail(pacientEmail);
+        }
+        var idTokenInfo = jwt_decode(idToken!) as idTokenInfo;
+        setEmail(idTokenInfo.email);
     },[])
+
+    const { error} = getHistory(email);
 
     return(
         <div
@@ -25,12 +36,9 @@ const FileReader: FC = () => {
                 width: "100vw",
             }}
         >
-            <object
-                data={tp4_60135PDF}
-                type="application/pdf"
-                width="70%"
-                height="100%"
-            />
+            {error === 404 && 
+            <Typography variant="h5">El hospital aún no subio su historial medico. Cuando lo haga, le será notificado via mail</Typography>
+            }
         </div>
     );
 }

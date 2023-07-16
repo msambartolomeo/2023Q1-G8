@@ -2,8 +2,8 @@ import axios from 'axios';
 import { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { doctorPool_tokenEndpoint, doctorUserPool_client_id, doctorUserPool_id, doctorUserPool_redirectURL, pacientPool_tokenEndpoint, pacientUserPool_client_id, pacientUserPool_id, pacientUserPool_redirectURL } from '../constantx';
-import jwt_decode from 'jwt-decode';
 import AuthContext from '../api/useAuth';
+import jwt_decode from 'jwt-decode';
 
 export interface idTokenInfo {
   at_hash: string;
@@ -40,14 +40,8 @@ export interface accessTokenInfo {
 const useCallBack = (role: string) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const {handleUpdateAuth} = useContext(AuthContext)
+  const { buildAuth, setAuth} = useContext(AuthContext);
 
-  const extractUPID = (id_token: string) =>{
-    var decodedToken = jwt_decode(id_token) as idTokenInfo;
-    const parts = decodedToken.iss.split("/");
-    const userPoolId = parts[parts.length - 1];
-    return userPoolId;
-  }
 
   const exchangeCodeForTokens = async (code: string) => {
     try {
@@ -67,15 +61,17 @@ const useCallBack = (role: string) => {
       localStorage.setItem('accessToken', access_token);
       localStorage.setItem('idToken', id_token);
       localStorage.setItem('refreshToken', refresh_token);
-      const userPoolId = extractUPID(id_token);
-      if(userPoolId === pacientUserPool_id) {
+      const authentication = buildAuth(access_token, id_token);
+      setAuth(authentication);
+      //navigate according to the user pool id
+      var decodedToken = jwt_decode(id_token) as idTokenInfo;
+      const parts = decodedToken.iss.split("/");
+      const userPoolId = parts[parts.length - 1];
+      if(userPoolId === pacientUserPool_id){
         navigate('/history');
       }else if(userPoolId === doctorUserPool_id){
         navigate('/doctor/pacients');
-      }else{
-        navigate('/401');
       }
-      handleUpdateAuth();
     } catch (error) {
       console.error('Error exchanging code for tokens:', error);
       navigate('/401');

@@ -22,6 +22,7 @@ import AuthContext, { emptyAuth } from "../api/useAuth";
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       setAuth(emptyAuth);
+      navigate('/')
     }
   
     return (
