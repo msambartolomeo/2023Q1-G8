@@ -15,6 +15,7 @@ export interface AuthContextValue {
     auth: Authentication;
     setAuth: (newAuth: Authentication) => void;
     handleUpdateAuth: () => void;
+    buildAuth: (accessToken: string, id_token: string) => Authentication;
 }
 
 export const emptyAuth: Authentication = {
@@ -27,7 +28,8 @@ export const emptyAuth: Authentication = {
 const authContext: AuthContextValue = {
     auth: emptyAuth,
     setAuth: () => null,
-    handleUpdateAuth: () => null
+    handleUpdateAuth: () => null,
+    buildAuth: () => emptyAuth
 }
 
 const AuthContext = createContext(authContext);
@@ -57,6 +59,19 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
     const handleUpdateAuth = () => setUpdateAuth(!updateAuth);
 
+    const buildAuth = (access_token: string, id_token: string) => {
+        var accessTokenInfo = jwt_decode(access_token) as accessTokenInfo;
+        var idTokenInfo = jwt_decode(id_token) as idTokenInfo;
+        const role = determineRole(extractUPID(idTokenInfo));
+        const authentication = {
+            username: accessTokenInfo.username,
+            client_id: accessTokenInfo.client_id,
+            content: {idTokenInfo, accessTokenInfo},
+            role: role
+        }
+        return authentication;
+    }
+
     useEffect(() => {
         const id_token = localStorage.getItem('idToken');
         const access_token = localStorage.getItem('accessToken');
@@ -64,23 +79,23 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         if(id_token === null || access_token === null || refreshToken === null){
             setAuth(emptyAuth);
         }else{
-            const access_token = localStorage.getItem('accessToken');
             if(access_token !== null && id_token !== null){
                 var accessTokenInfo = jwt_decode(access_token) as accessTokenInfo;
                 var idTokenInfo = jwt_decode(id_token) as idTokenInfo;
                 const role = determineRole(extractUPID(idTokenInfo));
-                setAuth({
+                const authentication = {
                     username: accessTokenInfo.username,
                     client_id: accessTokenInfo.client_id,
                     content: {idTokenInfo, accessTokenInfo},
                     role: role
-                });
+                }
+                setAuth(authentication);
             }
         }
-    }, [updateAuth])
+    }, [updateAuth]);
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth, handleUpdateAuth }}>
+        <AuthContext.Provider value={{ auth, setAuth, handleUpdateAuth, buildAuth }}>
             {children}
         </AuthContext.Provider>
     )
