@@ -41,6 +41,16 @@ locals {
         BUCKET_NAME = module.s3["records"].bucket_id
       }
     },
+    addHistory = {
+      name    = "addHistory"
+      path    = "../resources/lambda/addHistory.zip"
+      hash    = filebase64sha256("../resources/lambda/addHistory.zip")
+      handler = "addHistory.handler"
+      runtime = "python3.9"
+      environment = {
+        BUCKET_NAME = module.s3["records"].bucket_id
+      }
+    },
     addPatient = {
       name    = "addPatient"
       path    = "../resources/lambda/addPatient.zip"
