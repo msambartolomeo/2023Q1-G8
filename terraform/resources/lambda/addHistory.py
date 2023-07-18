@@ -8,7 +8,7 @@ import boto3
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-s3 = boto3.client("s3")
+s3 = boto3.client("s3", config=boto3.session.Config(signature_version="s3v4"))
 
 dynamo = boto3.client("dynamodb")
 
@@ -54,7 +54,7 @@ def handler(event, context):
             "put_object",
             Params={
                 "Bucket": bucket_name,
-                "Key": key,
+                "Key": f"{userId}/{key}",
                 "ContentType": "application/pdf",
             },
             ExpiresIn=20,

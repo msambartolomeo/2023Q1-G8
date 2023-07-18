@@ -65,6 +65,13 @@ locals {
       handler = "getPatients.handler"
       runtime = "python3.9"
     },
+    registerUser = {
+      name    = "registerUser"
+      path    = "../resources/lambda/registerUser.zip"
+      hash    = filebase64sha256("../resources/lambda/registerUser.zip")
+      handler = "registerUser.handler"
+      runtime = "python3.9"
+    },
   }
 
   # api gateway

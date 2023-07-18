@@ -8,7 +8,7 @@ import boto3
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-s3 = boto3.client("s3")
+s3 = boto3.client("s3", config=boto3.session.Config(signature_version="s3v4"))
 
 dynamo = boto3.client("dynamodb")
 
@@ -53,7 +53,9 @@ def handler(event, context):
 
     try:
         url = s3.generate_presigned_url(
-            "get_object", Params={"Bucket": bucket_name, "Key": file_key}, ExpiresIn=20
+            "get_object",
+            Params={"Bucket": bucket_name, "Key": f"{userId}/{file_key}"},
+            ExpiresIn=20,
         )
         message = f'File "{file_key}" found in bucket "{bucket_name}"'
         logger.info(message)
