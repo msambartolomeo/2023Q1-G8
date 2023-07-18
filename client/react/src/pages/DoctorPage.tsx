@@ -12,7 +12,7 @@ import PatientItem from "../components/PatientItem";
 
 const DoctorPage: FC = () => {
     const navigate = useNavigate();
-    const [b64DcotorId, setDoctorId] = useState<string>("");
+    const [b64DcotorId, setDoctorId] = useState<string>();
     const [pacients, setPacients] = useState([]);
 
     useEffect(() => {
@@ -32,17 +32,19 @@ const DoctorPage: FC = () => {
     }, [])
 
     useEffect(() => {
-        axiosInstance.get(`/users/${b64DcotorId}/history`).then((response: AxiosResponse) => {
-            setPacients(response.data)
-            console.log(response.data);
-        }).catch((error) => { console.log(error) })
+        if (b64DcotorId) {
+            axiosInstance.get(`/doctors/${b64DcotorId}/patients`).then((response: AxiosResponse) => {
+                setPacients(response.data)
+                console.log(response.data);
+            }).catch((error) => { console.log(error) })
+        }
     }, [b64DcotorId])
 
 
     const patientsList = pacients.map((item) => {
         return (
             <ListItem key={item}>
-                <PatientItem b64EmailId={item} b64DoctorId={b64DcotorId} />
+                {b64DcotorId && <PatientItem b64EmailId={item} b64DoctorId={b64DcotorId} />}
             </ListItem>
         )
     })
