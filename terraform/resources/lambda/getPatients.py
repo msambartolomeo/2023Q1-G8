@@ -15,7 +15,7 @@ dynamo = boto3.client("dynamodb")
 def handler(event, context):
     bucket_name = os.environ.get("BUCKET_NAME")
 
-    userId = event["pathParameters"]["userId"]
+    userId = event["pathParameters"]["doctorId"]
     try:
         email = base64.b64decode(userId.encode("utf-8")).decode("utf-8")
     except:

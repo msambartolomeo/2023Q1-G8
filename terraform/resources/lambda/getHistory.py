@@ -21,10 +21,15 @@ def handler(event, context):
         email = base64.b64decode(userId.encode("utf-8")).decode("utf-8")
     except:
         return {"statusCode": 400, "body": json.dumps("Path parameter must be base64")}
+    logger.info(userId)
+    logger.info(email)
+    logger.info("ahora lo otro")
 
     try:
         authorizedEmail = event["requestContext"]["authorizer"]["claims"]["email"]
+        logger.info(email)
         logger.info(authorizedEmail)
+        logger.info("ahora el if")
         if authorizedEmail != email:
             # check if it is doctor's email
             item = dynamo.get_item(
@@ -34,6 +39,7 @@ def handler(event, context):
                     "sk": {"S": userId},
                 },
             )["Item"]
+            logger.info(item)
             if not item:
                 raise Exception
     except:
@@ -48,6 +54,8 @@ def handler(event, context):
             },
         )["Item"]
         file_key = item["path"]["S"]
+        if file_key == "":
+            raise Exception()
     except:
         return {"statusCode": 404}
 
