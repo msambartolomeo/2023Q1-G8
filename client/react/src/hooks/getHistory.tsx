@@ -3,7 +3,7 @@ import * as base64 from 'base64-js';
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { axiosInstance } from "../api/axios";
 
-export const getHistory = (email: string) => {
+export const getHistory = (email: string, doctorId?: string) => {
     const [url, setUrl] = useState();
     const [error, setError] = useState();
     const [pdfData, setPdfData] = useState<string | null>(null);
@@ -11,16 +11,19 @@ export const getHistory = (email: string) => {
     useEffect(() => {
         const emailBytes = new TextEncoder().encode(email);
         const base64Email = base64.fromByteArray(emailBytes).toString();
-        (async () => {
-            try{                
-                const response = await axiosInstance.post(`/users/${base64Email}/history`);
-                setUrl(response.data.url.toString());
-            }catch(error: any){
-                if (error.response && error.response.status) {
-                    setError(error.response.status);
+        if(base64Email){
+            (async () => {
+                try{          
+                    const response = await axiosInstance.post(doctorId? `/doctors/${doctorId}/patients/${base64Email}/history` : `/users/${base64Email}/history`);
+                    console.log(url)
+                    setUrl(response.data.url.toString());
+                }catch(error: any){
+                    if (error.response && error.response.status) {
+                        setError(error.response.status);
+                    }
                 }
-            }
-        })();
+            })();
+        }
     },[email]);
 
     useEffect(() => {

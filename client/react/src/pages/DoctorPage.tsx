@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { idTokenInfo } from "../components/CallBack";
 import { doctorUserPool_id } from "../constantx";
@@ -6,8 +6,9 @@ import jwt_decode from 'jwt-decode';
 import * as base64 from 'base64-js';
 import { axiosInstance } from "../api/axios";
 import { AxiosResponse } from "axios";
-import { Box, Button, Grid, Modal, Paper, Typography } from "@mui/material";
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Paper, Snackbar, TextField, Typography } from "@mui/material";
 import PatientCard from "../components/PatientCard";
+import UploadFileModal from "../components/UploadFileModal";
 
 
 const DoctorPage: FC = () => {
@@ -15,6 +16,8 @@ const DoctorPage: FC = () => {
     const [b64DoctorId, setDoctorId] = useState<string>();
     const [pacients, setPacients] = useState<string[]>([]);
     const [modal, setOpenModal] = useState(false);
+    const [newPatient, setNewPatient] = useState("");
+    const [alert, setAlert] = useState(false);
 
     const handleModalOpen = () => {
         setOpenModal(!modal)
@@ -42,22 +45,59 @@ const DoctorPage: FC = () => {
                 setPacients(response.data)
             }).catch((error) => { console.log(error) })
         }
-    }, [b64DoctorId])
+    }, [b64DoctorId, alert])
+
+    const createPatient = async (newPatient: string) => {
+        try {
+            if( newPatient === ""){
+                return;
+            }
+            const response = await axiosInstance.post("/users", {newPatient});
+            if(response.status === 201){
+                setAlert(true);
+            }
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setNewPatient(event.target.value);
+    };
+
+    const handleClose = () => {
+        setAlert(false);
+    }
 
     return (
         <div style={{width: "100vw", height: "90vh"}}>
-            <Modal
-                open={modal}
-                onClose={handleModalOpen}
-            >
-                <Grid>
-                <   Grid item xs={12} marginBottom={7}><Typography variant="h5" align="center" id="parent-modal-title">Ingresar como</Typography></Grid>
-                        <Grid item xs={12} sx={{display:"flex", justifyContent:"space-evenly"}}>
-                        <Button variant="contained" color="success" >Confirmar</Button>
-                        <Button variant="contained" color="error">Cancelar</Button>
-                        </Grid>
-                </Grid>
-            </Modal>
+            <Dialog open={modal}>
+                <DialogTitle>Crear paciente</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Por favor ingresar el mail del paciente
+                    </DialogContentText>
+                    <TextField
+                        margin="dense"
+                        id="name"
+                        label="Email Address"
+                        type="email"
+                        fullWidth
+                        variant="standard"
+                        value={newPatient}
+                        onChange={handleEmailChange}
+                    />
+                </DialogContent>
+                <Snackbar open={alert} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                    Paciente creado con exito
+                </Alert>
+                </Snackbar>
+                <DialogActions>
+                    <Button onClick={() => createPatient(newPatient)} variant="outlined" color="success">Crear paciente</Button>
+                    <Button onClick={handleModalOpen}variant="outlined" color="error">Cancelar</Button>
+                </DialogActions>
+            </Dialog>
             <Grid container sx={{width:"100%"}} justifyContent="center">
                 <Grid item xs={11} component={Paper} sx={{minHeight: 80, borderRadius: 4, display: "flex", justifyContent: "space-between", alignItems: "center"}} elevation={8} padding={1.2} marginBottom={15}>
                     <Typography variant="h4">Pacientes</Typography>

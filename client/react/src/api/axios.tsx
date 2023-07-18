@@ -2,6 +2,7 @@ import axios from 'axios';
 import { api_URL, doctorPool_tokenEndpoint, pacientPool_tokenEndpoint, pacientUserPool_id } from '../constantx';
 import { accessTokenInfo, idTokenInfo } from '../components/CallBack';
 import jwt_decode from 'jwt-decode';
+import { URLSearchParams } from 'url';
 
 export const axiosInstance = axios.create({
     baseURL: api_URL,
@@ -52,11 +53,14 @@ axiosInstance.interceptors.response.use(
           const client_id = tokenInfo.client_id;          
           const tokenEndpoint = userPoolId === pacientUserPool_id? pacientPool_tokenEndpoint : doctorPool_tokenEndpoint;
           const response = await axios.post(tokenEndpoint, 
-            {
-            grant_type: 'refresh_token',
-            client_id: client_id,
-            refreshToken: localStorage.getItem('refreshToken'),
-          });
+            new URLSearchParams(
+              {
+                grant_type: 'refresh_token',
+                client_id: client_id,
+                refreshToken: localStorage.getItem('refreshToken')!
+              }
+              ).toString(),
+            {headers: { 'Content-Type': 'application/x-www-form-urlencoded'}});
   
           // Update the tokens in storage
           localStorage.setItem('accessToken', response.data.accessToken);

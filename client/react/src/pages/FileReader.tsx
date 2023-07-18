@@ -4,9 +4,11 @@ import jwt_decode from 'jwt-decode';
 import { idTokenInfo } from "../components/CallBack";
 import { CircularProgress, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
+import * as base64 from 'base64-js';
 
 const FileReader: FC = () => {
     const [email, setEmail] = useState("");
+    const [doctorId, setDoctorId] = useState<string | undefined>();
     const navigate = useNavigate();
     const { pacientEmail } = useParams();
 
@@ -15,15 +17,18 @@ const FileReader: FC = () => {
         if(!idToken){
             navigate('/401');
         }
+        var idTokenInfo = jwt_decode(idToken!) as idTokenInfo;
         if(pacientEmail){
             setEmail(pacientEmail);
+            const emailBytes = new TextEncoder().encode(idTokenInfo.email);
+            const base64Email = base64.fromByteArray(emailBytes).toString();
+            setDoctorId(base64Email);
         }else{
-            var idTokenInfo = jwt_decode(idToken!) as idTokenInfo;
             setEmail(idTokenInfo.email);
         }
     },[])
 
-    const { error, pdfData } = getHistory(email);
+    const { error, pdfData } = getHistory(email, doctorId);
 
     return(
         <div
