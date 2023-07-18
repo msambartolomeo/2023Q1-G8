@@ -1,18 +1,15 @@
 import { FC, useEffect, useState } from "react";
-//import tp4_60135PDF from "../assets/tp4_60135.pdf";
 import { getHistory } from "../hooks/getHistory";
 import jwt_decode from 'jwt-decode';
 import { idTokenInfo } from "../components/CallBack";
 import { CircularProgress, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-type Props = {
-    pacientEmail?: string;
-}
-
-const FileReader: FC<Props> = ({pacientEmail}) => {
+const FileReader: FC = () => {
     const [email, setEmail] = useState("");
     const navigate = useNavigate();
+    const { pacientEmail } = useParams();
+
     useEffect(() => {
         const idToken = localStorage.getItem("idToken");
         if(!idToken){
@@ -20,10 +17,10 @@ const FileReader: FC<Props> = ({pacientEmail}) => {
         }
         if(pacientEmail){
             setEmail(pacientEmail);
+        }else{
+            var idTokenInfo = jwt_decode(idToken!) as idTokenInfo;
+            setEmail(idTokenInfo.email);
         }
-        var idTokenInfo = jwt_decode(idToken!) as idTokenInfo;
-        console.log(idTokenInfo);
-        setEmail(idTokenInfo.email);
     },[])
 
     const { error, pdfData } = getHistory(email);

@@ -17,7 +17,7 @@ function App() {
           <Route path="/callback" element={<CallBackPage role={"pacient"}/>}/>
           <Route path="/doctor/callback" element={<CallBackPage role={"doctor"} />}/>
           <Route path="/doctor/pacients" element={<DoctorPage />} />
-          <Route path="/history" element={<FileReader />} />
+          <Route path="/history/:pacientEmail?" element={<FileReader />} />
           <Route path="401" element={<NotPermitedPage />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>

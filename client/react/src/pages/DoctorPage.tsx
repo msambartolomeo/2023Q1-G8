@@ -6,14 +6,19 @@ import jwt_decode from 'jwt-decode';
 import * as base64 from 'base64-js';
 import { axiosInstance } from "../api/axios";
 import { AxiosResponse } from "axios";
-import { List, ListItem } from "@mui/material";
-import PatientItem from "../components/PatientItem";
+import { Box, Button, Grid, Modal, Paper, Typography } from "@mui/material";
+import PatientCard from "../components/PatientCard";
 
 
 const DoctorPage: FC = () => {
     const navigate = useNavigate();
-    const [b64DcotorId, setDoctorId] = useState<string>();
-    const [pacients, setPacients] = useState([]);
+    const [b64DoctorId, setDoctorId] = useState<string>();
+    const [pacients, setPacients] = useState<string[]>([]);
+    const [modal, setOpenModal] = useState(false);
+
+    const handleModalOpen = () => {
+        setOpenModal(!modal)
+    }
 
     useEffect(() => {
         const idToken = localStorage.getItem('idToken');
@@ -32,30 +37,44 @@ const DoctorPage: FC = () => {
     }, [])
 
     useEffect(() => {
-        if (b64DcotorId) {
-            axiosInstance.get(`/doctors/${b64DcotorId}/patients`).then((response: AxiosResponse) => {
+        if (b64DoctorId) {
+            axiosInstance.get(`/doctors/${b64DoctorId}/patients`).then((response: AxiosResponse) => {
                 setPacients(response.data)
-                console.log(response.data);
             }).catch((error) => { console.log(error) })
         }
-    }, [b64DcotorId])
-
-
-    const patientsList = pacients.map((item) => {
-        return (
-            <ListItem key={item}>
-                {b64DcotorId && <PatientItem b64EmailId={item} b64DoctorId={b64DcotorId} />}
-            </ListItem>
-        )
-    })
-
+    }, [b64DoctorId])
 
     return (
-        <div>
-            <h1>Lista de pacientes</h1>
-            <List>
-                {patientsList}
-            </List>
+        <div style={{width: "100vw", height: "90vh"}}>
+            <Modal
+                open={modal}
+                onClose={handleModalOpen}
+            >
+                <Grid>
+                <   Grid item xs={12} marginBottom={7}><Typography variant="h5" align="center" id="parent-modal-title">Ingresar como</Typography></Grid>
+                        <Grid item xs={12} sx={{display:"flex", justifyContent:"space-evenly"}}>
+                        <Button variant="contained" color="success" >Confirmar</Button>
+                        <Button variant="contained" color="error">Cancelar</Button>
+                        </Grid>
+                </Grid>
+            </Modal>
+            <Grid container sx={{width:"100%"}} justifyContent="center">
+                <Grid item xs={11} component={Paper} sx={{minHeight: 80, borderRadius: 4, display: "flex", justifyContent: "space-between", alignItems: "center"}} elevation={8} padding={1.2} marginBottom={15}>
+                    <Typography variant="h4">Pacientes</Typography>
+                    <Button variant="contained" color="secondary" onClick={handleModalOpen}>Crear Paciente</Button>
+                </Grid>
+                <Grid item xs={11} component={Box} sx={{borderRadius: 4, minHeight: 550, border: "solid"}}>
+                    <Grid item xs={12}>
+                        <Typography variant="h5" align="center">Lista de pacientes</Typography>                    
+                    </Grid>
+                    {pacients.map((pacient: string) => 
+                    <Grid item xs={12} sm={12} md={3.5} lg={3.5} xl={3.5}>
+                        {b64DoctorId &&
+                            <PatientCard pacientInfo={pacient} doctorId={b64DoctorId} />
+                        }
+                    </Grid>)}
+                </Grid>
+            </Grid>
         </div>
     )
 
