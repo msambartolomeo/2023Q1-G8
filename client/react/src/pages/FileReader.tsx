@@ -14,23 +14,25 @@ const FileReader: FC = () => {
 
     useEffect(() => {
         const idToken = localStorage.getItem("idToken");
-        if(!idToken){
+        if (!idToken) {
             navigate('/401');
         }
         var idTokenInfo = jwt_decode(idToken!) as idTokenInfo;
-        if(pacientEmail){
-            setEmail(pacientEmail);
+        if (pacientEmail) {
+            setEmail(atob(pacientEmail));
             const emailBytes = new TextEncoder().encode(idTokenInfo.email);
             const base64Email = base64.fromByteArray(emailBytes).toString();
             setDoctorId(base64Email);
-        }else{
+        } else {
             setEmail(idTokenInfo.email);
         }
-    },[])
+    }, [])
 
     const { error, pdfData } = getHistory(email, doctorId);
 
-    return(
+    console.log(pdfData, error)
+
+    return (
         <div
             style={{
                 display: "flex",
@@ -42,9 +44,9 @@ const FileReader: FC = () => {
         >
             {pdfData ? (
                 <embed src={pdfData} type="application/pdf" width="70%" height="100%" />
-            ) : <CircularProgress sx={{position: "absolute", top: "50%", right: "50%"}} size="lg" />}
-            {error === 404 && !pdfData && 
-            <Typography variant="h5">El hospital aún no subio su historial medico. Cuando lo haga, le será notificado via mail</Typography>
+            ) : <CircularProgress sx={{ position: "absolute", top: "50%", right: "50%" }} size="lg" />}
+            {error === 404 && !pdfData &&
+                <Typography variant="h5">El hospital aún no subio su historial medico. Cuando lo haga, le será notificado via mail</Typography>
             }
         </div>
     );

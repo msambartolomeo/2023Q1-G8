@@ -8,7 +8,6 @@ import { axiosInstance } from "../api/axios";
 import { AxiosResponse } from "axios";
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Paper, Snackbar, TextField, Typography } from "@mui/material";
 import PatientCard from "../components/PatientCard";
-import UploadFileModal from "../components/UploadFileModal";
 
 
 const DoctorPage: FC = () => {
@@ -49,14 +48,15 @@ const DoctorPage: FC = () => {
 
     const createPatient = async (newPatient: string) => {
         try {
-            if( newPatient === ""){
+            if (newPatient === "") {
                 return;
             }
-            const response = await axiosInstance.post("/users", {newPatient});
-            if(response.status === 201){
+            const response = await axiosInstance.post("/users", { email: newPatient });
+            if (response.status === 201) {
                 setAlert(true);
             }
-        }catch(error){
+            handleModalOpen()
+        } catch (error) {
             console.log(error)
         }
     }
@@ -70,7 +70,7 @@ const DoctorPage: FC = () => {
     }
 
     return (
-        <div style={{width: "100vw", height: "90vh"}}>
+        <div style={{ width: "100vw", height: "90vh" }}>
             <Dialog open={modal}>
                 <DialogTitle>Crear paciente</DialogTitle>
                 <DialogContent>
@@ -88,31 +88,31 @@ const DoctorPage: FC = () => {
                         onChange={handleEmailChange}
                     />
                 </DialogContent>
-                <Snackbar open={alert} autoHideDuration={6000} onClose={handleClose}>
+                <DialogActions>
+                    <Button onClick={() => createPatient(newPatient)} variant="outlined" color="success">Crear paciente</Button>
+                    <Button onClick={handleModalOpen} variant="outlined" color="error">Cancelar</Button>
+                </DialogActions>
+            </Dialog>
+            <Snackbar open={alert} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
                     Paciente creado con exito
                 </Alert>
-                </Snackbar>
-                <DialogActions>
-                    <Button onClick={() => createPatient(newPatient)} variant="outlined" color="success">Crear paciente</Button>
-                    <Button onClick={handleModalOpen}variant="outlined" color="error">Cancelar</Button>
-                </DialogActions>
-            </Dialog>
-            <Grid container sx={{width:"100%"}} justifyContent="center">
-                <Grid item xs={11} component={Paper} sx={{minHeight: 80, borderRadius: 4, display: "flex", justifyContent: "space-between", alignItems: "center"}} elevation={8} padding={1.2} marginBottom={15}>
+            </Snackbar>
+            <Grid container sx={{ width: "100%" }} justifyContent="center">
+                <Grid item xs={11} component={Paper} sx={{ minHeight: 80, borderRadius: 4, display: "flex", justifyContent: "space-between", alignItems: "center" }} elevation={8} padding={1.2} marginBottom={15}>
                     <Typography variant="h4">Pacientes</Typography>
                     <Button variant="contained" color="secondary" onClick={handleModalOpen}>Crear Paciente</Button>
                 </Grid>
-                <Grid item xs={11} component={Box} sx={{borderRadius: 4, minHeight: 550, border: "solid"}}>
+                <Grid container item xs={11} component={Box} sx={{ borderRadius: 4, minHeight: 550, border: "solid", justifyContent: "center" }}>
                     <Grid item xs={12}>
-                        <Typography variant="h5" align="center">Lista de pacientes</Typography>                    
+                        <Typography variant="h5" align="center">Lista de pacientes</Typography>
                     </Grid>
-                    {pacients.map((pacient: string) => 
-                    <Grid item xs={12} sm={12} md={3.5} lg={3.5} xl={3.5}>
-                        {b64DoctorId &&
-                            <PatientCard pacientInfo={pacient} doctorId={b64DoctorId} />
-                        }
-                    </Grid>)}
+                    {pacients.map((pacient: string) =>
+                        <Grid item xs={12} sm={12} md={3.5} lg={3.5} xl={3.5}>
+                            {b64DoctorId &&
+                                <PatientCard pacientInfo={pacient} doctorId={b64DoctorId} />
+                            }
+                        </Grid>)}
                 </Grid>
             </Grid>
         </div>
