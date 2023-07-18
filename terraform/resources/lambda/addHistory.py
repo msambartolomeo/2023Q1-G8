@@ -51,7 +51,13 @@ def handler(event, context):
             ExpressionAttributeValues={":new_file_key": {"S": key}},
         )
         url = s3.generate_presigned_url(
-            "put_object", Params={"Bucket": bucket_name, "Key": key}, ExpiresIn=20
+            "put_object",
+            Params={
+                "Bucket": bucket_name,
+                "Key": key,
+                "ContentType": "application/pdf",
+            },
+            ExpiresIn=20,
         )
     except:
         return {"statusCode": 500}
