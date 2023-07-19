@@ -30,7 +30,7 @@ locals {
       hash    = filebase64sha256("../resources/lambda/getUser.zip")
       handler = "getUser.handler"
       runtime = "python3.9"
-    }
+    },
     getHistory = {
       name    = "getHistory"
       path    = "../resources/lambda/getHistory.zip"
@@ -40,14 +40,46 @@ locals {
       environment = {
         BUCKET_NAME = module.s3["records"].bucket_id
       }
-    }
+    },
+    addHistory = {
+      name    = "addHistory"
+      path    = "../resources/lambda/addHistory.zip"
+      hash    = filebase64sha256("../resources/lambda/addHistory.zip")
+      handler = "addHistory.handler"
+      runtime = "python3.9"
+      environment = {
+        BUCKET_NAME = module.s3["records"].bucket_id
+      }
+    },
+    addPatient = {
+      name    = "addPatient"
+      path    = "../resources/lambda/addPatient.zip"
+      hash    = filebase64sha256("../resources/lambda/addPatient.zip")
+      handler = "addPatient.handler"
+      runtime = "python3.9"
+    },
+    getPatients = {
+      name    = "getPatients"
+      path    = "../resources/lambda/getPatients.zip"
+      hash    = filebase64sha256("../resources/lambda/getPatients.zip")
+      handler = "getPatients.handler"
+      runtime = "python3.9"
+    },
+    registerUser = {
+      name    = "registerUser"
+      path    = "../resources/lambda/registerUser.zip"
+      hash    = filebase64sha256("../resources/lambda/registerUser.zip")
+      handler = "registerUser.handler"
+      runtime = "python3.9"
+    },
   }
 
   # api gateway
   apigateway = {
-    name       = "api-gw"
-    stage_name = "prodction"
-    base_path  = "api"
+    name             = "api-gw"
+    stage_name       = "prodction"
+    base_path        = "api"
+    user_pools_names = ["Paciente", "Doctor"]
     template_file = jsonencode({
       openapi : "3.0.1"
       info = {
@@ -66,6 +98,16 @@ locals {
           }
         },
         "/api/users" = {
+          post = {
+            x-amazon-apigateway-integration = {
+              httpMethod           = "POST"
+              payloadFormatVersion = "1.0"
+              type                 = "aws_proxy"
+              uri                  = module.lambda.lambdas["addPatient"].invoke_arn
+            }
+          }
+        }
+        "/api/users/{userId}" = {
           get = {
             x-amazon-apigateway-integration = {
               httpMethod           = "POST"
@@ -73,9 +115,9 @@ locals {
               type                 = "aws_proxy"
               uri                  = module.lambda.lambdas["getUser"].invoke_arn
             }
-          }
+          },
         }
-        "/api/history" = {
+        "/api/users/{userId}/history" = {
           get = {
             x-amazon-apigateway-integration = {
               httpMethod           = "POST"
@@ -85,8 +127,17 @@ locals {
             }
           }
         }
+        "/api/doctors/{userId}/patients" = {
+          get = {
+            x-amazon-apigateway-integration = {
+              httpMethod           = "POST"
+              payloadFormatVersion = "1.0"
+              type                 = "aws_proxy"
+              uri                  = module.lambda.lambdas["getPatients"].invoke_arn
+            }
+          }
+        }
     } })
-
   }
 
   # Dynamodb

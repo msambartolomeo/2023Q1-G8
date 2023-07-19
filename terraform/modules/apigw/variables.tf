@@ -12,3 +12,8 @@ variable "name" {
   type        = string
   description = "API-GW name"
 }
+
+variable "user_pools_names" {
+  type = list(string)
+  description = "User pool names to create authorizers"
+}
