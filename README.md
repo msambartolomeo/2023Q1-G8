@@ -55,6 +55,6 @@ Se usaron varias funciones. Se destacan:
 # Arquitectura     
 ![image](arquitectura_modificada.png)
 
-# Arquitectura realizada en l final
+# Arquitectura realizada en el final
 
 ![image](arquitectura_final.svg)
