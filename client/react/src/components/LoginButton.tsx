@@ -12,11 +12,11 @@ const LoginButton: FC = () => {
   }
 
   const handlePacientLogin = () => {
-    window.location.href= pacientUserPool_loginURL;
+    window.location.href = pacientUserPool_loginURL;
   };
 
   const handleDoctorLogin = () => {
-    window.location.href= doctorUserPool_loginURL;
+    window.location.href = doctorUserPool_loginURL;
   };
 
   const style = {
@@ -33,16 +33,18 @@ const LoginButton: FC = () => {
     p: 4,
   };
 
-  return(
+  return (
     <>
-      <Button variant="contained" onClick={handleModalOpen}>Ingresar</Button>
+      <Button variant="contained" onClick={handleModalOpen}>
+        <Typography height={"45px"} style={{ lineHeight: '45px' }}>Ingresar</Typography>
+      </Button>
       <Modal
         open={modal}
         onClose={handleModalOpen}
       >
-        <Grid sx={{ ...style}}>
+        <Grid sx={{ ...style }}>
           <Grid item xs={12} marginBottom={7}><Typography variant="h5" align="center" id="parent-modal-title">Ingresar como</Typography></Grid>
-          <Grid item xs={12} sx={{display:"flex", justifyContent:"space-evenly"}}>
+          <Grid item xs={12} sx={{ display: "flex", justifyContent: "space-evenly" }}>
             <Button variant="contained" onClick={handleDoctorLogin}>Medico</Button>
             <Button variant="contained" onClick={handlePacientLogin}>Paciente</Button>
           </Grid>
