@@ -1,0 +1,57 @@
+.homePageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 1rem;
+}
+
+.title {
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  margin-bottom: 3rem;
+}
+
+.doctorImage {
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.homePageContainer {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+@media (min-width: 960px) {
+
+  /* Estilos para tamaños md en adelante */
+  .homePageContainer {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .contentContainer {
+    padding: 1rem;
+  }
+
+  .doctorImage {
+    width: 50%;
+    /* La imagen ocupa la mitad del ancho de la pantalla */
+    max-height: none;
+    /* Se elimina la altura máxima */
+    margin-top: 4rem;
+  }
+}
