@@ -1,26 +1,27 @@
 
 import React from 'react';
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import './HomePage.css';
+
+import doctor_image from "../assets/doctor_image.jpg"
 
 const HomePage: React.FC = () => {
   return (
     <Box className="homePageContainer">
-      <Grid container>
+      <Grid container className="homePageContainer">
         <Grid item xs={10} md={6}>
           <Box className="contentContainer">
             <Typography variant="h1" className="title">
-              Have you attended our hospital?
+              Fuiste atendido por nosotros?
             </Typography>
             <Typography variant="subtitle1" className="subtitle">
-              You can check your medical history right here.
+              Consulta tu registro medico aqui!
             </Typography>
-            <Button variant="outlined">Check my history</Button>
           </Box>
         </Grid>
-        <Grid item xs={12} md={5} className='doctorContain'>
+        <Grid item xs={12} md={6} className='doctorContain'>
           <img
-            src="../src/assets/Medicos/doctor_image.jpg"
+            src={doctor_image}
             alt="Doctor"
             className="doctorImage"
           />
